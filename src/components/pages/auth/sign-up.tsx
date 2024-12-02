@@ -1,20 +1,13 @@
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@components/ui/form";
+import { Form } from "@components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { Input } from "@/components/ui/input";
+import FormText from "@/components/mocules/form-inputs/form-text";
 import { useSignUp } from "@/hooks/react-query/useAuth";
 
 const formSchema = z
@@ -65,71 +58,22 @@ export default function SignUpPage() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Email<span className="text-destructive">*</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="example@gmail.com"
-                      error={Boolean(form.formState.errors.email)}
-                      {...field}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
+            <FormText name="email" label="Email" placeholder="example@gmail.com" required={true} />
+            <FormText
               name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Password<span className="text-destructive">*</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Password"
-                      error={Boolean(form.formState.errors.password)}
-                      {...field}
-                      type="password"
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Password"
+              type="password"
+              placeholder="********"
+              required={true}
             />
-            <FormField
-              control={form.control}
+            <FormText
               name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Confirm password<span className="text-destructive">*</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Password"
-                      error={Boolean(form.formState.errors.confirmPassword)}
-                      {...field}
-                      type="password"
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Confirm password"
+              type="password"
+              placeholder="********"
+              required={true}
             />
+
             <Button
               type="submit"
               variant="default"

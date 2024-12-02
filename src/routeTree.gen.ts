@@ -17,6 +17,9 @@ import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index
 import { Route as AuthenticationSignUpImport } from './routes/_authentication/sign-up'
 import { Route as AuthenticationLogInImport } from './routes/_authentication/log-in'
 import { Route as AuthenticatedProfileImport } from './routes/_authenticated/profile'
+import { Route as AuthenticationpasswordVerifyImport } from './routes/_authentication/(password)/verify'
+import { Route as AuthenticationpasswordResetPasswordImport } from './routes/_authentication/(password)/reset-password'
+import { Route as AuthenticationpasswordForgotPasswordImport } from './routes/_authentication/(password)/forgot-password'
 
 // Create/Update Routes
 
@@ -53,6 +56,27 @@ const AuthenticatedProfileRoute = AuthenticatedProfileImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+
+const AuthenticationpasswordVerifyRoute =
+  AuthenticationpasswordVerifyImport.update({
+    id: '/(password)/verify',
+    path: '/verify',
+    getParentRoute: () => AuthenticationRoute,
+  } as any)
+
+const AuthenticationpasswordResetPasswordRoute =
+  AuthenticationpasswordResetPasswordImport.update({
+    id: '/(password)/reset-password',
+    path: '/reset-password',
+    getParentRoute: () => AuthenticationRoute,
+  } as any)
+
+const AuthenticationpasswordForgotPasswordRoute =
+  AuthenticationpasswordForgotPasswordImport.update({
+    id: '/(password)/forgot-password',
+    path: '/forgot-password',
+    getParentRoute: () => AuthenticationRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -100,6 +124,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authentication/(password)/forgot-password': {
+      id: '/_authentication/(password)/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof AuthenticationpasswordForgotPasswordImport
+      parentRoute: typeof AuthenticationImport
+    }
+    '/_authentication/(password)/reset-password': {
+      id: '/_authentication/(password)/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof AuthenticationpasswordResetPasswordImport
+      parentRoute: typeof AuthenticationImport
+    }
+    '/_authentication/(password)/verify': {
+      id: '/_authentication/(password)/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof AuthenticationpasswordVerifyImport
+      parentRoute: typeof AuthenticationImport
+    }
   }
 }
 
@@ -122,11 +167,19 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 interface AuthenticationRouteChildren {
   AuthenticationLogInRoute: typeof AuthenticationLogInRoute
   AuthenticationSignUpRoute: typeof AuthenticationSignUpRoute
+  AuthenticationpasswordForgotPasswordRoute: typeof AuthenticationpasswordForgotPasswordRoute
+  AuthenticationpasswordResetPasswordRoute: typeof AuthenticationpasswordResetPasswordRoute
+  AuthenticationpasswordVerifyRoute: typeof AuthenticationpasswordVerifyRoute
 }
 
 const AuthenticationRouteChildren: AuthenticationRouteChildren = {
   AuthenticationLogInRoute: AuthenticationLogInRoute,
   AuthenticationSignUpRoute: AuthenticationSignUpRoute,
+  AuthenticationpasswordForgotPasswordRoute:
+    AuthenticationpasswordForgotPasswordRoute,
+  AuthenticationpasswordResetPasswordRoute:
+    AuthenticationpasswordResetPasswordRoute,
+  AuthenticationpasswordVerifyRoute: AuthenticationpasswordVerifyRoute,
 }
 
 const AuthenticationRouteWithChildren = AuthenticationRoute._addFileChildren(
@@ -139,6 +192,9 @@ export interface FileRoutesByFullPath {
   '/log-in': typeof AuthenticationLogInRoute
   '/sign-up': typeof AuthenticationSignUpRoute
   '/': typeof AuthenticatedIndexRoute
+  '/forgot-password': typeof AuthenticationpasswordForgotPasswordRoute
+  '/reset-password': typeof AuthenticationpasswordResetPasswordRoute
+  '/verify': typeof AuthenticationpasswordVerifyRoute
 }
 
 export interface FileRoutesByTo {
@@ -147,6 +203,9 @@ export interface FileRoutesByTo {
   '/log-in': typeof AuthenticationLogInRoute
   '/sign-up': typeof AuthenticationSignUpRoute
   '/': typeof AuthenticatedIndexRoute
+  '/forgot-password': typeof AuthenticationpasswordForgotPasswordRoute
+  '/reset-password': typeof AuthenticationpasswordResetPasswordRoute
+  '/verify': typeof AuthenticationpasswordVerifyRoute
 }
 
 export interface FileRoutesById {
@@ -157,13 +216,32 @@ export interface FileRoutesById {
   '/_authentication/log-in': typeof AuthenticationLogInRoute
   '/_authentication/sign-up': typeof AuthenticationSignUpRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authentication/(password)/forgot-password': typeof AuthenticationpasswordForgotPasswordRoute
+  '/_authentication/(password)/reset-password': typeof AuthenticationpasswordResetPasswordRoute
+  '/_authentication/(password)/verify': typeof AuthenticationpasswordVerifyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/profile' | '/log-in' | '/sign-up' | '/'
+  fullPaths:
+    | ''
+    | '/profile'
+    | '/log-in'
+    | '/sign-up'
+    | '/'
+    | '/forgot-password'
+    | '/reset-password'
+    | '/verify'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/profile' | '/log-in' | '/sign-up' | '/'
+  to:
+    | ''
+    | '/profile'
+    | '/log-in'
+    | '/sign-up'
+    | '/'
+    | '/forgot-password'
+    | '/reset-password'
+    | '/verify'
   id:
     | '__root__'
     | '/_authenticated'
@@ -172,6 +250,9 @@ export interface FileRouteTypes {
     | '/_authentication/log-in'
     | '/_authentication/sign-up'
     | '/_authenticated/'
+    | '/_authentication/(password)/forgot-password'
+    | '/_authentication/(password)/reset-password'
+    | '/_authentication/(password)/verify'
   fileRoutesById: FileRoutesById
 }
 
@@ -210,7 +291,10 @@ export const routeTree = rootRoute
       "filePath": "_authentication.tsx",
       "children": [
         "/_authentication/log-in",
-        "/_authentication/sign-up"
+        "/_authentication/sign-up",
+        "/_authentication/(password)/forgot-password",
+        "/_authentication/(password)/reset-password",
+        "/_authentication/(password)/verify"
       ]
     },
     "/_authenticated/profile": {
@@ -228,6 +312,18 @@ export const routeTree = rootRoute
     "/_authenticated/": {
       "filePath": "_authenticated/index.tsx",
       "parent": "/_authenticated"
+    },
+    "/_authentication/(password)/forgot-password": {
+      "filePath": "_authentication/(password)/forgot-password.tsx",
+      "parent": "/_authentication"
+    },
+    "/_authentication/(password)/reset-password": {
+      "filePath": "_authentication/(password)/reset-password.tsx",
+      "parent": "/_authentication"
+    },
+    "/_authentication/(password)/verify": {
+      "filePath": "_authentication/(password)/verify.tsx",
+      "parent": "/_authentication"
     }
   }
 }
