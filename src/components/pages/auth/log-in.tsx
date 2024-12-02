@@ -1,21 +1,14 @@
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@components/ui/form";
+import { Form } from "@components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { Input } from "@/components/ui/input";
 import { useSignIn } from "@/hooks/react-query/useAuth";
+import FormText from "../../mocules/form-inputs/form-text";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -36,6 +29,7 @@ export default function LogInPage() {
   // const signInWithGoogleMutation = useSignInWithGoogle();
 
   function onSubmit(data: FormInputs) {
+    console.log(data);
     signInMutation.mutate(data);
   }
 
@@ -50,45 +44,22 @@ export default function LogInPage() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="example@gmail.com"
-                      error={Boolean(form.formState.errors.email)}
-                      {...field}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
+            <FormText name="email" label="Email" placeholder="example@gmail.com" required={true} />
+            <FormText
               name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Password"
-                      error={Boolean(form.formState.errors.password)}
-                      {...field}
-                      type="password"
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Password"
+              type="password"
+              placeholder="********"
+              required={true}
             />
+            <div className="flex justify-end">
+              <Link
+                to="/forgot-password"
+                className="p-0 text-right text-sm hover:text-blue-500 hover:no-underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
             <Button
               type="submit"
               variant="default"
@@ -105,7 +76,7 @@ export default function LogInPage() {
               variant="outline"
               type="button"
               onClick={() => {
-                // signInWithGoogleMutation.mutate() 
+                // signInWithGoogleMutation.mutate()
               }}
             >
               Sign in with Google
