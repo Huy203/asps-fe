@@ -7,12 +7,18 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { useSignIn } from "@/hooks/react-query/useAuth";
+import { useSignIn, useSignInWithGoogle } from "@/hooks/react-query/useAuth";
 import FormText from "../../mocules/form-inputs/form-text";
 
 const formSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8, "Password must be at least 8 characters long"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters long")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character"
+    ),
 });
 
 type FormInputs = z.infer<typeof formSchema>;
@@ -26,7 +32,7 @@ export default function LogInPage() {
     resolver: zodResolver(formSchema),
   });
   const signInMutation = useSignIn();
-  // const signInWithGoogleMutation = useSignInWithGoogle();
+  const signInWithGoogleMutation = useSignInWithGoogle();
 
   function onSubmit(data: FormInputs) {
     console.log(data);
@@ -76,7 +82,7 @@ export default function LogInPage() {
               variant="outline"
               type="button"
               onClick={() => {
-                // signInWithGoogleMutation.mutate()
+                signInWithGoogleMutation.mutate();
               }}
             >
               Sign in with Google

@@ -30,6 +30,7 @@ export default function ProfilePage() {
   const signOutMutation = useSignOut();
   // TODO: uncomment this block when connected to the backend
   // const { data, isLoading, isSuccess } = useUserProfile();
+  const isLoading = false;
   const confettiRef = useRef<ConfettiRef>(null);
 
   function onSubmit(data: FormInputs) {
@@ -48,7 +49,7 @@ export default function ProfilePage() {
     <div className="flex min-h-screen w-screen flex-col items-center justify-center gap-2 overflow-hidden bg-gradient-to-r from-blue-200 to-pink-200 sm:pb-16 sm:pt-10">
       <div className="z-10 flex h-fit w-full flex-col gap-2 px-2 md:w-1/2 lg:w-[30%]">
         {/* TODO: uncomment this block when connected to the backend */}
-        {false ? (
+        {isLoading ? (
           <Loader2 className="mx-auto size-12 animate-spin" />
         ) : (
           <>

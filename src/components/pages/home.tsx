@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
 import { useSignOut } from "@/hooks/react-query/useAuth";
-import { useAccountIdentifier } from "@/hooks/react-query/useUsers";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { getAuthValueFromStorage } from "@/services";
 
@@ -10,7 +9,8 @@ import Ripple from "../ui/ripple";
 
 export default function HomePage() {
   const signOut = useSignOut();
-  const { data, isError, isLoading } = useAccountIdentifier();
+  // const { data, isError, isLoading } = useAccountIdentifier();
+  const isLoading = false;
   const { accessToken, setAccessToken } = useAuthStore();
 
   if (!accessToken) {
@@ -20,7 +20,6 @@ export default function HomePage() {
     }
   }
 
-  // TODO: uncomment this block when connected to the backend
   // if (isError) {
   //   signOut.mutate();
   //   return <div>Session expired</div>;
@@ -51,6 +50,7 @@ export default function HomePage() {
   );
   // return (
   //   <main className="grid h-screen place-items-center content-center gap-10">
+  //     <Ripple className="z-0" />
   //     {isLoading ? (
   //       <div className="text-center text-2xl font-bold">Loading... </div>
   //     ) : (

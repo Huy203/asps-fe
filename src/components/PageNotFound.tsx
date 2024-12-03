@@ -1,4 +1,3 @@
-/* eslint-disable tailwindcss/no-custom-classname */
 import { useNavigate } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
