@@ -1,6 +1,11 @@
-// import { getAuth, signOut as signOutFirebase } from "firebase/auth";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut as signOutFirebase,
+} from "firebase/auth";
 
-// import { auth } from "@/firebaseConfig";
+import { auth } from "@/lib/config/firebase";
 import { FetchingData } from "@/lib/types";
 // import { AccountIdentifier } from "@/lib/types/user.type";
 import { AccountIdentifier } from "@/lib/types/user.type";
@@ -14,19 +19,21 @@ export type AuthInfo = {
   refreshToken: string;
 };
 
+type SignInPayload = {
+  email: string;
+  password: string;
+};
+
 export const getAuthValueFromStorage = () => {
   return localStorage.getItem(localStorageTokenKey)
     ? (JSON.parse(localStorage.getItem(localStorageTokenKey) ?? "") as AuthInfo)
     : null;
 };
 
-export const signIn = async () => {
-  // const data = (await apiAuth.post("auth/signin", { json: payload }).json<FetchingData<AuthInfo>>())
-  //   .data;
-  const data = {
-    accessToken: "accessToken",
-    refreshToken: "refreshToken",
-  };
+export const signIn = async (payload: SignInPayload) => {
+  const data = (
+    await apiAuth.post("auth/sign-in", { json: payload }).json<FetchingData<AuthInfo>>()
+  ).data;
   localStorage.setItem(localStorageTokenKey, JSON.stringify(data));
   return data;
 };
@@ -37,15 +44,16 @@ type SignUpPayload = {
 };
 
 export const signUp = async (payload: SignUpPayload) => {
-  const data = (await apiAuth.post("auth/signup", { json: payload }).json<FetchingData<AuthInfo>>())
-    .data;
+  const data = (
+    await apiAuth.post("auth/sign-up", { json: payload }).json<FetchingData<AuthInfo>>()
+  ).data;
   localStorage.setItem(localStorageTokenKey, JSON.stringify(data));
   return data;
 };
 
 export const signOut = async () => {
-  // const auth = getAuth();
-  // await signOutFirebase(auth);
+  const auth = getAuth();
+  await signOutFirebase(auth);
   localStorage.clear();
   return;
 };
@@ -94,23 +102,23 @@ export const getAccountIdentifier = async () => {
 };
 
 // // FIREBASE
-// export const signInWithGoogle = async () => {
-//   const provider = new GoogleAuthProvider();
-//   const userCredential = await signInWithPopup(auth, provider);
-//   const credential = GoogleAuthProvider.credentialFromResult(userCredential);
-//   if (!credential) return;
+export const signInWithGoogle = async () => {
+  const provider = new GoogleAuthProvider();
+  const userCredential = await signInWithPopup(auth, provider);
+  const credential = GoogleAuthProvider.credentialFromResult(userCredential);
+  if (!credential) return;
 
-//   const data = (
-//     await apiAuth
-//       .post("auth/provider", {
-//         json: {
-//           credential: credential.idToken,
-//           provider: provider.providerId,
-//         },
-//       })
-//       .json<FetchingData<AuthInfo>>()
-//   ).data;
+  const data = (
+    await apiAuth
+      .post("auth/provider", {
+        json: {
+          credential: credential.idToken,
+          provider: provider.providerId,
+        },
+      })
+      .json<FetchingData<AuthInfo>>()
+  ).data;
 
-//   localStorage.setItem(localStorageTokenKey, JSON.stringify(data));
-//   return data;
-// };
+  localStorage.setItem(localStorageTokenKey, JSON.stringify(data));
+  return data;
+};
