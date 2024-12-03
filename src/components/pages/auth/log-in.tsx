@@ -12,7 +12,13 @@ import FormText from "../../mocules/form-inputs/form-text";
 
 const formSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8, "Password must be at least 8 characters long"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters long")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character"
+    ),
 });
 
 type FormInputs = z.infer<typeof formSchema>;

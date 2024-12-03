@@ -35,11 +35,13 @@ export const signIn = async (payload: SignInPayload) => {
   const data = (
     await apiAuth.post("auth/sign-in", { json: payload }).json<FetchingData<AuthInfo>>()
   ).data;
+
   localStorage.setItem(localStorageTokenKey, JSON.stringify(data));
   return data;
 };
 
 type SignUpPayload = {
+  name: string;
   email: string;
   password: string;
 };

@@ -12,9 +12,22 @@ import { useSignUp } from "@/hooks/react-query/useAuth";
 
 const formSchema = z
   .object({
+    name: z.string().min(3, "Name must be at least 3 characters long"),
     email: z.string().email(),
-    password: z.string().min(8, "Password must be at least 8 characters long"),
-    confirmPassword: z.string().min(8, "Password must be at least 8 characters long"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters long")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character"
+      ),
+    confirmPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters long")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character"
+      ),
   })
   .superRefine((data, ctx) => {
     if (data.password !== data.confirmPassword) {
@@ -32,6 +45,7 @@ type FormInputs = z.infer<typeof formSchema>;
 export default function SignUpPage() {
   const form = useForm<FormInputs>({
     defaultValues: {
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -44,6 +58,7 @@ export default function SignUpPage() {
     signUpMutation.mutate({
       email: data.email,
       password: data.password,
+      name: data.name,
     });
   }
 
@@ -58,6 +73,7 @@ export default function SignUpPage() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2">
+            <FormText name="name" label="Name" placeholder="Enter your name" required={true} />
             <FormText name="email" label="Email" placeholder="example@gmail.com" required={true} />
             <FormText
               name="password"
