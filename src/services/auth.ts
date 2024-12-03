@@ -7,17 +7,11 @@ import { AccountIdentifier } from "@/lib/types/user.type";
 import { generateSearchParams } from "@/lib/utils";
 import api, { apiAuth } from "@/services/kyInstance";
 
-const delay = 500;
 export const localStorageTokenKey = "auth_client_token";
 
 export type AuthInfo = {
   accessToken: string;
   refreshToken: string;
-};
-
-type SignInPayload = {
-  email: string;
-  password: string;
 };
 
 export const getAuthValueFromStorage = () => {
@@ -26,7 +20,7 @@ export const getAuthValueFromStorage = () => {
     : null;
 };
 
-export const signIn = async (payload: SignInPayload) => {
+export const signIn = async () => {
   // const data = (await apiAuth.post("auth/signin", { json: payload }).json<FetchingData<AuthInfo>>())
   //   .data;
   const data = {

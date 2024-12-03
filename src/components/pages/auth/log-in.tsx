@@ -30,7 +30,7 @@ export default function LogInPage() {
 
   function onSubmit(data: FormInputs) {
     console.log(data);
-    signInMutation.mutate(data);
+    signInMutation.mutate();
   }
 
   return (
