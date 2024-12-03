@@ -12,7 +12,7 @@ import { AccountIdentifier } from "@/lib/types/user.type";
 import { generateSearchParams } from "@/lib/utils";
 import api, { apiAuth } from "@/services/kyInstance";
 
-const delay = 500;
+// const delay = 500;
 export const localStorageTokenKey = "auth_client_token";
 
 export type AuthInfo = {
