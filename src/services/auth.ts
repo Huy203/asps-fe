@@ -1,11 +1,11 @@
-import { getAuth, signOut as signOutFirebase } from "firebase/auth";
+// import { getAuth, signOut as signOutFirebase } from "firebase/auth";
 
 // import { auth } from "@/firebaseConfig";
 import { FetchingData } from "@/lib/types";
 // import { AccountIdentifier } from "@/lib/types/user.type";
+import { AccountIdentifier } from "@/lib/types/user.type";
 import { generateSearchParams } from "@/lib/utils";
 import api, { apiAuth } from "@/services/kyInstance";
-import { AccountIdentifier } from "@/lib/types/user.type";
 
 const delay = 500;
 export const localStorageTokenKey = "auth_client_token";
@@ -27,8 +27,12 @@ export const getAuthValueFromStorage = () => {
 };
 
 export const signIn = async (payload: SignInPayload) => {
-  const data = (await apiAuth.post("auth/signin", { json: payload }).json<FetchingData<AuthInfo>>())
-    .data;
+  // const data = (await apiAuth.post("auth/signin", { json: payload }).json<FetchingData<AuthInfo>>())
+  //   .data;
+  const data = {
+    accessToken: "accessToken",
+    refreshToken: "refreshToken",
+  };
   localStorage.setItem(localStorageTokenKey, JSON.stringify(data));
   return data;
 };
@@ -46,8 +50,8 @@ export const signUp = async (payload: SignUpPayload) => {
 };
 
 export const signOut = async () => {
-  const auth = getAuth();
-  await signOutFirebase(auth);
+  // const auth = getAuth();
+  // await signOutFirebase(auth);
   localStorage.clear();
   return;
 };

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
-import { signIn, signOut, signUp } from "@/services/auth";
+import { forgotPassword, resetPassword, signIn, signOut, signUp, verifyOtp } from "@/services/auth";
 
 import { useToast } from "../use-toast";
 import { useAuthStore } from "../useAuthStore";
@@ -67,9 +67,77 @@ export const useSignOut = () => {
   return useMutation({
     mutationFn: signOut,
     onSuccess: () => {
+      console.log("dhahaha");
       navigate({ to: "/log-in" });
       clearAccessToken();
       queryClient.clear();
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+};
+
+export const useForgotPassword = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: forgotPassword,
+    onSuccess: (_, variables) => {
+      toast({
+        title: "Success",
+        description: "Please check your email for the OTP",
+        variant: "default",
+      });
+      navigate({ to: "/verify", params: { email: variables.email } });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+};
+
+export const useVerifyOTP = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: verifyOtp,
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Please check your email for the OTP",
+        variant: "default",
+      });
+      navigate({ to: "/reset-password" });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+};
+
+export const useResetPassword = () => {
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: resetPassword,
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Password has been reset",
+        variant: "default",
+      });
     },
     onError: (error) => {
       toast({
