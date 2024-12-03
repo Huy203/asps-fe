@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 
-import { useSignOut } from "@/hooks/react-query/useAuth";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { getAuthValueFromStorage } from "@/services";
 
@@ -8,7 +7,7 @@ import { Button } from "../ui";
 import Ripple from "../ui/ripple";
 
 export default function HomePage() {
-  const signOut = useSignOut();
+  // const signOut = useSignOut();
   // const { data, isError, isLoading } = useAccountIdentifier();
   const isLoading = false;
   const { accessToken, setAccessToken } = useAuthStore();
