@@ -30,7 +30,7 @@ export default function ProfilePage() {
   const signOutMutation = useSignOut();
   // TODO: uncomment this block when connected to the backend
   // const { data, isLoading, isSuccess } = useUserProfile();
-  const isLoading = true;
+  const isLoading = false;
   const confettiRef = useRef<ConfettiRef>(null);
 
   function onSubmit(data: FormInputs) {

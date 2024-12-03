@@ -26,7 +26,7 @@ export const useSignIn = () => {
   return useMutation({
     mutationFn: signIn,
     onSuccess: (data) => {
-      setAccessToken(data.accessToken);
+      setAccessToken(JSON.stringify(data));
       navigate({ to: "/" });
       toast({
         title: "Success",
