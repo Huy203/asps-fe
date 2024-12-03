@@ -2,9 +2,6 @@
 
 /** @type {import('tailwindcss').Config} */
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const colors = require("tailwindcss/colors");
-
 module.exports = {
   content: ["./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/routes/**/*.{js,ts,jsx,tsx,mdx}"],
   darkMode: ["class"],
@@ -13,6 +10,9 @@ module.exports = {
       sans: ["Inter", "sans-serif"],
     },
     extend: {
+      fontFamily: {
+        inter: ["Inter", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

@@ -17,6 +17,7 @@ export const apiCustomToken = (token: string) =>
     },
   });
 const api = ky.create({
+  mode: "no-cors",
   prefixUrl: BASE_URL,
   hooks: {
     beforeRequest: [
@@ -49,6 +50,7 @@ const api = ky.create({
 });
 
 export const apiAuth = ky.create({
+  mode: "no-cors",
   prefixUrl: BASE_URL,
   hooks: {
     afterResponse: [

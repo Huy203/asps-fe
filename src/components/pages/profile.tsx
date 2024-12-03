@@ -3,12 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Form } from "@components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, LogOut } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { useSignOut } from "@/hooks/react-query/useAuth";
 
+import { useUserProfile } from "@/hooks/react-query/useUsers";
 import FormText from "../mocules/form-inputs/form-text";
 import Confetti, { ConfettiRef } from "../ui/confetti";
 
@@ -29,7 +30,7 @@ export default function ProfilePage() {
   });
   const signOutMutation = useSignOut();
   // TODO: uncomment this block when connected to the backend
-  // const { data, isLoading, isSuccess } = useUserProfile();
+  const { data, isLoading, isSuccess } = useUserProfile();
   const confettiRef = useRef<ConfettiRef>(null);
 
   function onSubmit(data: FormInputs) {
@@ -38,17 +39,17 @@ export default function ProfilePage() {
   }
 
   // TODO: uncomment this block when connected to the backend
-  // useEffect(() => {
-  //   if (isSuccess && data) {
-  //     form.reset(data);
-  //   }
-  // }, [data, isSuccess]);
+  useEffect(() => {
+    if (isSuccess && data) {
+      form.reset(data);
+    }
+  }, [data, isSuccess]);
 
   return (
     <div className="flex min-h-screen w-screen flex-col items-center justify-center gap-2 overflow-hidden bg-gradient-to-r from-blue-200 to-pink-200 sm:pb-16 sm:pt-10">
       <div className="z-10 flex h-fit w-full flex-col gap-2 px-2 md:w-1/2 lg:w-[30%]">
         {/* TODO: uncomment this block when connected to the backend */}
-        {false ? (
+        {isLoading ? (
           <Loader2 className="mx-auto size-12 animate-spin" />
         ) : (
           <>

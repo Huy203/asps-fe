@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { useSignIn } from "@/hooks/react-query/useAuth";
+import { useSignIn, useSignInWithGoogle } from "@/hooks/react-query/useAuth";
 import FormText from "../../mocules/form-inputs/form-text";
 
 const formSchema = z.object({
@@ -26,7 +26,7 @@ export default function LogInPage() {
     resolver: zodResolver(formSchema),
   });
   const signInMutation = useSignIn();
-  // const signInWithGoogleMutation = useSignInWithGoogle();
+  const signInWithGoogleMutation = useSignInWithGoogle();
 
   function onSubmit(data: FormInputs) {
     console.log(data);
@@ -76,7 +76,7 @@ export default function LogInPage() {
               variant="outline"
               type="button"
               onClick={() => {
-                // signInWithGoogleMutation.mutate()
+                signInWithGoogleMutation.mutate();
               }}
             >
               Sign in with Google
