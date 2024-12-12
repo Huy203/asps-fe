@@ -1,4 +1,5 @@
-/* eslint-disable no-undef */
+/* eslint-env node */
+/* eslint-disable */
 
 /** @type {import('tailwindcss').Config} */
 

@@ -17,6 +17,7 @@ import { Route as AuthenticatedIndexImport } from "./routes/_authenticated/index
 import { Route as AuthenticationSignUpImport } from "./routes/_authentication/sign-up";
 import { Route as AuthenticationLogInImport } from "./routes/_authentication/log-in";
 import { Route as AuthenticatedProfileImport } from "./routes/_authenticated/profile";
+import { Route as AuthenticatedDashboardIndexImport } from "./routes/_authenticated/dashboard/index";
 import { Route as AuthenticationpasswordVerifyImport } from "./routes/_authentication/(password)/verify";
 import { Route as AuthenticationpasswordResetPasswordImport } from "./routes/_authentication/(password)/reset-password";
 import { Route as AuthenticationpasswordForgotPasswordImport } from "./routes/_authentication/(password)/forgot-password";
@@ -54,6 +55,12 @@ const AuthenticationLogInRoute = AuthenticationLogInImport.update({
 const AuthenticatedProfileRoute = AuthenticatedProfileImport.update({
   id: "/profile",
   path: "/profile",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+
+const AuthenticatedDashboardIndexRoute = AuthenticatedDashboardIndexImport.update({
+  id: "/dashboard/",
+  path: "/dashboard/",
   getParentRoute: () => AuthenticatedRoute,
 } as any);
 
@@ -144,6 +151,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthenticationpasswordVerifyImport;
       parentRoute: typeof AuthenticationImport;
     };
+    "/_authenticated/dashboard/": {
+      id: "/_authenticated/dashboard/";
+      path: "/dashboard";
+      fullPath: "/dashboard";
+      preLoaderRoute: typeof AuthenticatedDashboardIndexImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
   }
 }
 
@@ -152,11 +166,13 @@ declare module "@tanstack/react-router" {
 interface AuthenticatedRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute;
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute;
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute;
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
 };
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -192,6 +208,7 @@ export interface FileRoutesByFullPath {
   "/forgot-password": typeof AuthenticationpasswordForgotPasswordRoute;
   "/reset-password": typeof AuthenticationpasswordResetPasswordRoute;
   "/verify": typeof AuthenticationpasswordVerifyRoute;
+  "/dashboard": typeof AuthenticatedDashboardIndexRoute;
 }
 
 export interface FileRoutesByTo {
@@ -203,6 +220,7 @@ export interface FileRoutesByTo {
   "/forgot-password": typeof AuthenticationpasswordForgotPasswordRoute;
   "/reset-password": typeof AuthenticationpasswordResetPasswordRoute;
   "/verify": typeof AuthenticationpasswordVerifyRoute;
+  "/dashboard": typeof AuthenticatedDashboardIndexRoute;
 }
 
 export interface FileRoutesById {
@@ -216,6 +234,7 @@ export interface FileRoutesById {
   "/_authentication/(password)/forgot-password": typeof AuthenticationpasswordForgotPasswordRoute;
   "/_authentication/(password)/reset-password": typeof AuthenticationpasswordResetPasswordRoute;
   "/_authentication/(password)/verify": typeof AuthenticationpasswordVerifyRoute;
+  "/_authenticated/dashboard/": typeof AuthenticatedDashboardIndexRoute;
 }
 
 export interface FileRouteTypes {
@@ -228,7 +247,8 @@ export interface FileRouteTypes {
     | "/"
     | "/forgot-password"
     | "/reset-password"
-    | "/verify";
+    | "/verify"
+    | "/dashboard";
   fileRoutesByTo: FileRoutesByTo;
   to:
     | ""
@@ -238,7 +258,8 @@ export interface FileRouteTypes {
     | "/"
     | "/forgot-password"
     | "/reset-password"
-    | "/verify";
+    | "/verify"
+    | "/dashboard";
   id:
     | "__root__"
     | "/_authenticated"
@@ -249,7 +270,8 @@ export interface FileRouteTypes {
     | "/_authenticated/"
     | "/_authentication/(password)/forgot-password"
     | "/_authentication/(password)/reset-password"
-    | "/_authentication/(password)/verify";
+    | "/_authentication/(password)/verify"
+    | "/_authenticated/dashboard/";
   fileRoutesById: FileRoutesById;
 }
 
@@ -281,7 +303,8 @@ export const routeTree = rootRoute
       "filePath": "_authenticated.tsx",
       "children": [
         "/_authenticated/profile",
-        "/_authenticated/"
+        "/_authenticated/",
+        "/_authenticated/dashboard/"
       ]
     },
     "/_authentication": {
@@ -321,6 +344,10 @@ export const routeTree = rootRoute
     "/_authentication/(password)/verify": {
       "filePath": "_authentication/(password)/verify.tsx",
       "parent": "/_authentication"
+    },
+    "/_authenticated/dashboard/": {
+      "filePath": "_authenticated/dashboard/index.tsx",
+      "parent": "/_authenticated"
     }
   }
 }
