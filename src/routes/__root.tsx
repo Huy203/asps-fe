@@ -7,7 +7,6 @@ const TanStackRouterDevtools = import.meta.env.PROD
   : React.lazy(() =>
       // Lazy load in development
       import("@tanstack/router-devtools").then((res) => ({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         default: res.TanStackRouterDevtools,
         // For Embedded Mode
         // default: res.TanStackRouterDevtoolsPanel

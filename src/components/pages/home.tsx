@@ -1,15 +1,11 @@
-import { Link } from "@tanstack/react-router";
-
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { getAuthValueFromStorage } from "@/services";
 
-import { Button } from "../ui";
-import Ripple from "../ui/ripple";
+import { useAccountIdentifier } from "@/hooks/react-query/useUsers";
 
 export default function HomePage() {
   // const signOut = useSignOut();
-  // const { data, isError, isLoading } = useAccountIdentifier();
-  const isLoading = false;
+  const { data, isLoading } = useAccountIdentifier();
   const { accessToken, setAccessToken } = useAuthStore();
 
   if (!accessToken) {
@@ -25,50 +21,13 @@ export default function HomePage() {
   // }
 
   return (
-    <main className="grid h-screen place-items-center content-center gap-10">
-      <Ripple className="z-0" />
-
+    <main className="size-screen flex flex-row place-items-center content-center gap-2">
       {isLoading ? (
         <div className="text-center text-2xl font-bold">Loading... </div>
       ) : (
-        <>
-          <div className="text-center text-2xl font-bold">
-            Welcome to the home page, example user!
-          </div>
-          {accessToken ? (
-            <div>Access token founded</div>
-          ) : (
-            <div>Access token not found, requesting...</div>
-          )}
-          <Link to="/profile">
-            <Button>Go to profile</Button>
-          </Link>
-        </>
+        data && <div className="flex h-screen basis-3/5 flex-col justify-start gap-9 p-8"></div>
       )}
+      <div>other component</div>
     </main>
   );
-  // return (
-  //   <main className="grid h-screen place-items-center content-center gap-10">
-  //     <Ripple className="z-0" />
-  //     {isLoading ? (
-  //       <div className="text-center text-2xl font-bold">Loading... </div>
-  //     ) : (
-  //       data && (
-  //         <>
-  //           <div className="text-center text-2xl font-bold">
-  //             Welcome to the home page, {data.username}!
-  //           </div>
-  //           {accessToken ? (
-  //             <div>Access token founded</div>
-  //           ) : (
-  //             <div>Access token not found, requesting...</div>
-  //           )}
-  //           <Link to="/profile">
-  //             <Button>Go to profile</Button>
-  //           </Link>
-  //         </>
-  //       )
-  //     )}
-  //   </main>
-  // );
 }
