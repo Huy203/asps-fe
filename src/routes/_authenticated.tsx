@@ -41,7 +41,7 @@ export const Route = createFileRoute("/_authenticated")({
   },
   errorComponent: (error) => {
     console.error(error);
-    return <ErrorFallback />;
+    return <AuthenticatedPage />;
   },
   component: AuthenticatedPage,
 });

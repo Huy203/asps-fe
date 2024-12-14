@@ -99,3 +99,50 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+.fc-scrollgrid-section-header .fc-scroller::-webkit-scrollbar {
+ display: none;
+ width: 0;
+}
+
+.fc-theme-standard th {
+  border-top-right-radius: 1rem;
+}
+
+
+
+.fc-media-screen {
+  height: 100%;
+}
+
+.fc-toolbar-title {
+  font-weight: 600;
+  font-size: large !important;
+}
+
+.fc-header-toolbar {
+  margin-bottom: 1rem !important;
+}
+
+table.fc-scrollgrid {
+  border-radius: 1rem;
+  background: white;
+  .fc-scrollgrid-sync-inner {
+    height: 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  tr {
+    height: 3rem
+  }
+}
+
+.fc-toolbar-chunk button {
+  text-transform: capitalize !important;
+  font-size: 14px !important;
+  font-weight: 500;
+  background-color: hsl(var(--background)) !important;
+  border-color: hsl(var(--input)) !important;
+  color: hsl(var(--primary)) !important;
+}

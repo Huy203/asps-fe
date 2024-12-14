@@ -20,7 +20,7 @@ const features: SideBarFeatureProps[] = [
 export default function SideBar() {
   const signOut = useSignOut();
   // const { avatar } = useUserAvatar();
-  const { data: user, isSuccess } = useUserProfile();
+  // const { data: user, isSuccess } = useUserProfile();
 
   return (
     <aside className="h-full w-[280px] shrink-0 border-r bg-white">
@@ -53,17 +53,17 @@ export default function SideBar() {
                   </div>
                   {/* )} */}
                   <div className="flex h-10 w-full flex-1 flex-col justify-between overflow-hidden">
-                    {user && isSuccess ? (
+                    {/* {user && isSuccess ? (
                       <>
                         <p className="text-small font-semibold text-black">{user.fullName}</p>
                         <p className="text-supporting-text truncate text-xs">{user.email}</p>
                       </>
-                    ) : (
-                      <>
-                        <Skeleton className="h-[17px] w-20" />
-                        <Skeleton className="w-22 h-[17px]" />
-                      </>
-                    )}
+                    ) : ( */}
+                    <>
+                      <Skeleton className="h-[17px] w-20" />
+                      <Skeleton className="w-22 h-[17px]" />
+                    </>
+                    {/* )} */}
                   </div>
                 </div>
                 <button onClick={() => signOut.mutate()}>
