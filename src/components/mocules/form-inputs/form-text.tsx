@@ -1,13 +1,6 @@
 import { useFormContext } from "react-hook-form";
 
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input, InputProps } from "@/components/ui/input";
 
 export type FormTextProps = InputProps & {
@@ -17,6 +10,7 @@ export type FormTextProps = InputProps & {
 
 export default function FormText({ name, label, required, className, ...props }: FormTextProps) {
   const { control, formState } = useFormContext();
+
   return (
     <FormField
       control={control}
@@ -29,15 +23,21 @@ export default function FormText({ name, label, required, className, ...props }:
           </FormLabel>
           <FormControl>
             <Input
-              type="text"
               placeholder={props.placeholder}
-              error={Boolean(formState.errors.email)}
+              error={Boolean(formState.errors[name])}
               {...field}
-              onChange={field.onChange}
+              onChange={(e) => {
+                const value =
+                  props.type === "number"
+                    ? e.target.value
+                      ? +e.target.value.replace(/^0+(?=\d)/, "")
+                      : undefined
+                    : e.target.value;
+                field.onChange(value);
+              }}
               {...props}
             />
           </FormControl>
-          <FormDescription />
           <FormMessage />
         </FormItem>
       )}
