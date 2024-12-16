@@ -1,67 +1,73 @@
-import FullCalendar from "@fullcalendar/react";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import { X } from "lucide-react";
-import { useState } from "react";
-import { renderToString } from "react-dom/server";
+import { useEffect, useState } from "react";
 import { FormTask } from "../organisms/form-task";
-import { Button, Card, CardHeader, CardTitle } from "../ui";
+import TaskCalendar from "../organisms/task-calendar";
+import { Button, Card, CardContent, CardHeader, CardTitle } from "../ui";
+import DashboardViewAction from "../organisms/dashboard-view-action";
+import { Draggable } from "@fullcalendar/interaction";
+
+const externalEvents = [
+  { title: "Art 1", id: 34432, custom: "fdsfdsfds" },
+  { title: "Art 2", id: 323232 },
+  { title: "Art 3", id: 1111 },
+  { title: "Art 4", id: 432432 },
+];
 
 export default function DashboardPage() {
-  const [addingTask, setAddingTask] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  useEffect(() => {
+    let draggableEl = document.getElementById("external-events");
+    if (!draggableEl) return;
+    const draggable = new Draggable(draggableEl, {
+      itemSelector: ".fc-event",
+      eventData: function (eventEl) {
+        let id = eventEl.dataset.id;
+        let title = eventEl.getAttribute("title");
+        let color = eventEl.dataset.color;
+        let custom = eventEl.dataset.custom;
+
+        return {
+          id: id,
+          title: title,
+          color: color,
+          custom: custom,
+          create: true,
+        };
+      },
+    });
+
+    return () => {
+      draggable.destroy();
+    };
+  }, []);
 
   return (
     <div className="grid h-screen grid-cols-12 gap-4 p-8 pt-6">
       <div className="col-span-9">
-        <FullCalendar
-          editable
-          droppable
-          plugins={[timeGridPlugin]}
-          initialView="timeGridWeek"
-          events={[
-            { title: "event 1", date: "2024-12-13" },
-            { title: "event 2", date: "2024-12-13" },
-          ]}
-          allDaySlot={false}
-          dayHeaderClassNames="text-gray-500 text-sm font-normal"
-          titleFormat={{ year: "numeric", month: "long" }}
-          dayHeaderDidMount={function (arg) {
-            const date = arg.date.getDate();
-            const day = arg.date.toLocaleDateString("en-US", { weekday: "short" });
-            arg.el.innerHTML = renderToString(
-              <div className="flex h-full items-center justify-center gap-1">
-                <span>{day}</span>
-                <span className="font-bold text-primary">{date}</span>
-              </div>
-            );
-          }}
-        />
+        <DashboardViewAction />
+        <TaskCalendar />
       </div>
       <div className="col-span-3 flex flex-col items-end gap-4">
-        <Button onClick={() => setAddingTask(true)}>Add Task</Button>
-        {addingTask ? (
-          <div
-            className={`fixed right-0 top-0 z-50 h-full bg-white p-4 shadow-lg transition-transform duration-300 ease-in-out ${
-              addingTask ? "translate-x-0" : "translate-x-full"
-            }`}
-          >
-            <div className="mb-4 flex items-center justify-between border-b">
-              <h2 className="text-lg font-semibold">Task Details</h2>
-
-              <Button variant="link" onClick={() => setAddingTask(false)}>
-                <X />
-              </Button>
-            </div>
-
-            <FormTask onTaskAdded={() => setAddingTask(false)} />
-          </div>
-        ) : (
-          <Card className="w-full">
-            <CardHeader>
-              <CardTitle>Add Task</CardTitle>
-            </CardHeader>
-          </Card>
-          /* Task List */
-        )}
+        <Button onClick={() => setIsSheetOpen(true)}>Add Task</Button>
+        <FormTask open={isSheetOpen} onOpenChange={setIsSheetOpen} />
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>Unestimated Tasks</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-1" id="external-events">
+            {externalEvents.map((event) => (
+              <div
+                key={event.id}
+                className="fc-event fc-daygrid-event fc-daygrid-block-event bg-blue-50 text-blue-700"
+                data-id={event.id}
+                data-custom={event.custom}
+                title={event.title}
+              >
+                <div className="fc-event-main">{event.title}</div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

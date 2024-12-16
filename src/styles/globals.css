@@ -109,8 +109,6 @@
   border-top-right-radius: 1rem;
 }
 
-
-
 .fc-media-screen {
   height: 100%;
 }
@@ -145,4 +143,30 @@ table.fc-scrollgrid {
   background-color: hsl(var(--background)) !important;
   border-color: hsl(var(--input)) !important;
   color: hsl(var(--primary)) !important;
+}
+
+.fc .fc-timegrid-col.fc-day-today {
+  background-color: white
+}
+
+.fc-event {
+  cursor: move;
+}
+
+.fc-event-main {
+  border-radius: 0.5rem;
+  padding: 0.5rem !important;
+  /* background-color: oklch(0.97 0.014 254.604);
+  color: oklch(0.488 0.243 264.376) !important; */
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.fc-v-event {
+  /* background: none !important;
+  border: none !important; */
+}
+
+.fc-event-time {
+  color: oklch(0.623 0.214 259.815)
 }

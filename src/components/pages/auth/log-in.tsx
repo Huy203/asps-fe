@@ -35,7 +35,6 @@ export default function LogInPage() {
   const signInWithGoogleMutation = useSignInWithGoogle();
 
   function onSubmit(data: FormInputs) {
-    console.log(data);
     signInMutation.mutate(data);
   }
 
