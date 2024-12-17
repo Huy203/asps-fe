@@ -3,21 +3,28 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import { Button } from "../ui";
 import interactionPlugin from "@fullcalendar/interaction";
 import { Task } from "@/lib/types";
-import { TaskPriority, TaskStatus } from "@/lib/enums";
+import { PriotityMapBorderColor, StatusMapTextColor, StatusMapColor } from "./support";
+import { useUpdateTask } from "@/hooks/react-query/useTasks";
+import { TaskStatus } from "@/lib/enums";
 
 export default function TaskCalendar({ tasks }: { tasks: Task[] }) {
-  const events = tasks.map((task) => ({
-    id: task.id,
-    title: task.name,
-    start: task.startTime,
-    end: getEndTimeByDuration(task.startTime, task.estimatedTime),
-    borderColor: PriotityMapBorderColor[task.priorityLevel],
-    textColor: StatusMapTextColor[task.status],
-    backgroundColor: StatusMapColor[task.status],
-  }));
+  const { mutate } = useUpdateTask();
+
+  const events = tasks
+    .filter((task) => task.estimatedTime)
+    .map((task) => ({
+      id: task.id,
+      title: task.name,
+      start: task.startTime,
+      end: getEndTimeByDuration(task.startTime, task.estimatedTime),
+      borderColor: PriotityMapBorderColor[task.priorityLevel],
+      textColor: StatusMapTextColor[task.status],
+      backgroundColor: StatusMapColor[task.status],
+    }));
 
   return (
     <FullCalendar
+      nowIndicator
       editable
       droppable
       plugins={[timeGridPlugin, interactionPlugin]}
@@ -56,11 +63,52 @@ export default function TaskCalendar({ tasks }: { tasks: Task[] }) {
       }}
       slotLabelClassNames="text-gray-400 text-xs"
       drop={(info) => {
-        info.draggedEl.parentNode?.removeChild(info.draggedEl);
+        const task = tasks.find((task) => task.id === info.draggedEl.dataset.id);
+        if (!task) return;
+        mutate({
+          id: task.id,
+          payload: {
+            ...task,
+            startTime: new Date(info.dateStr),
+            estimatedTime: 1,
+            status: new Date(info.dateStr) < new Date() ? TaskStatus.Expired : task.status,
+          },
+        });
       }}
       scrollTime={new Date().getHours() + ":00:00"}
+      eventReceive={(info) => {
+        info.event.setProp("backgroundColor", info.draggedEl.style.backgroundColor);
+        info.event.setProp("borderColor", info.draggedEl.style.borderColor);
+        info.event.setProp("textColor", info.draggedEl.style.color);
+      }}
       eventDrop={(info) => {
-        console.log(info);
+        const task = tasks.find((task) => task.id === info.event.id);
+        if (!task) return;
+        mutate({
+          id: task.id,
+          payload: {
+            ...task,
+            startTime: info.event.start ?? new Date(),
+            estimatedTime: task.estimatedTime,
+            status:
+              info.event.start && info.event.start < new Date() ? TaskStatus.Expired : task.status,
+          },
+        });
+      }}
+      eventResize={(info) => {
+        const task = tasks.find((task) => task.id === info.event.id);
+        if (!task) return;
+        mutate({
+          id: task.id,
+          payload: {
+            ...task,
+            // in hours
+            estimatedTime: Math.round(
+              ((info.event.end?.getTime() ?? 0) - (info.event.start?.getTime() ?? 0)) /
+                (1000 * 60 * 60)
+            ),
+          },
+        });
       }}
     />
   );
@@ -70,24 +118,4 @@ const getEndTimeByDuration = (startTime: Date, duration: number) => {
   const date = new Date(startTime);
   date.setHours(date.getHours() + duration);
   return date.toISOString();
-};
-
-const PriotityMapBorderColor: Record<TaskPriority, string> = {
-  [TaskPriority.High]: "#ef4444",
-  [TaskPriority.Medium]: "#eab308",
-  [TaskPriority.Low]: "#3b82f6",
-};
-
-const StatusMapTextColor: Record<TaskStatus, string> = {
-  [TaskStatus["To do"]]: "rgb(51 65 85)",
-  [TaskStatus["In progress"]]: "rgb(29 78 216)",
-  [TaskStatus.Completed]: "#15803d",
-  [TaskStatus.Expired]: "#b91c1c",
-};
-
-const StatusMapColor: Record<TaskStatus, string> = {
-  [TaskStatus["To do"]]: "rgb(248 250 252)",
-  [TaskStatus["In progress"]]: "rgb(239 246 255)",
-  [TaskStatus.Completed]: "#f0fdf4",
-  [TaskStatus.Expired]: "#fef2f2",
 };

@@ -7,6 +7,7 @@ import { ThreeDotsLoader } from "../mocules/three-dot-loader";
 import { Terminal } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "../ui/alert";
 import { useGetTasks } from "@/hooks/react-query/useTasks";
+import UnestimatedTasks from "../organisms/unestimated-tasks";
 
 export default function DashboardPage() {
   const [getFeedback, setGetFeedback] = useState(false);
@@ -39,14 +40,6 @@ export default function DashboardPage() {
     };
   }, []);
 
-  const externalEvents =
-    tasks
-      ?.filter((task) => !task.estimatedTime)
-      .map((task) => ({
-        id: task.id,
-        title: task.name,
-      })) || [];
-
   return (
     <div className="grid h-screen grid-cols-12 gap-4 p-8 pt-6">
       <div className="col-span-9">
@@ -60,23 +53,7 @@ export default function DashboardPage() {
       </div>
       <div className="col-span-3 flex flex-col items-end gap-4">
         <Button onClick={() => setGetFeedback(true)}>Analyze Schedule</Button>
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Unestimated Tasks</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-1" id="external-events">
-            {externalEvents.map((event) => (
-              <div
-                key={event.id}
-                className="fc-event fc-daygrid-event fc-daygrid-block-event bg-slate-50 text-slate-700"
-                data-id={event.id}
-                title={event.title}
-              >
-                <div className="fc-event-main">{event.title}</div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+        <UnestimatedTasks />
         <Card className="w-full">
           <CardHeader>
             <CardTitle>AI Feedback</CardTitle>
