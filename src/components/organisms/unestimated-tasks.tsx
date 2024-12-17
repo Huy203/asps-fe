@@ -22,6 +22,9 @@ export default function UnestimatedTasks() {
         <CardTitle>Unestimated Tasks</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-1" id="external-events">
+        {externalEvents.length === 0 && (
+          <div className="text-sm text-neutral-400">No unestimated tasks found</div>
+        )}
         {externalEvents.map((event) => (
           <div
             key={event.id}
