@@ -2,32 +2,27 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { Button } from "../ui";
 import interactionPlugin from "@fullcalendar/interaction";
+import { Task } from "@/lib/types";
+import { TaskPriority, TaskStatus } from "@/lib/enums";
 
-export default function TaskCalendar() {
+export default function TaskCalendar({ tasks }: { tasks: Task[] }) {
+  const events = tasks.map((task) => ({
+    id: task.id,
+    title: task.name,
+    start: task.startTime,
+    end: getEndTimeByDuration(task.startTime, task.estimatedTime),
+    borderColor: PriotityMapBorderColor[task.priorityLevel],
+    textColor: StatusMapTextColor[task.status],
+    backgroundColor: StatusMapColor[task.status],
+  }));
+
   return (
     <FullCalendar
       editable
       droppable
       plugins={[timeGridPlugin, interactionPlugin]}
       initialView="timeGridWeek"
-      events={[
-        {
-          id: "1",
-          title: "All-day event",
-          color: "oklch(0.97 0.014 254.604)",
-          start: "2024-12-15T10:00:00",
-          end: "2024-12-16T10:00:00",
-          custom: "questo è un campo custom",
-        },
-        {
-          id: "2",
-          title: "Timed event",
-          color: "#0097a7",
-          start: "2024-12-15T12:00:00",
-          end: "2024-12-16T12:00:00",
-          custom: "custom stuff",
-        },
-      ]}
+      events={events}
       allDaySlot={false}
       dayHeaderClassNames="text-gray-500 text-sm font-normal"
       titleFormat={{ year: "numeric", month: "long" }}
@@ -57,14 +52,42 @@ export default function TaskCalendar() {
         },
       }}
       headerToolbar={{
-        left: "prev,today,next",
-        center: "title",
-        right: "analyze",
+        right: "prev,today,next",
       }}
       slotLabelClassNames="text-gray-400 text-xs"
       drop={(info) => {
         info.draggedEl.parentNode?.removeChild(info.draggedEl);
       }}
+      scrollTime={new Date().getHours() + ":00:00"}
+      eventDrop={(info) => {
+        console.log(info);
+      }}
     />
   );
 }
+
+const getEndTimeByDuration = (startTime: Date, duration: number) => {
+  const date = new Date(startTime);
+  date.setHours(date.getHours() + duration);
+  return date.toISOString();
+};
+
+const PriotityMapBorderColor: Record<TaskPriority, string> = {
+  [TaskPriority.High]: "#ef4444",
+  [TaskPriority.Medium]: "#eab308",
+  [TaskPriority.Low]: "#3b82f6",
+};
+
+const StatusMapTextColor: Record<TaskStatus, string> = {
+  [TaskStatus["To do"]]: "rgb(51 65 85)",
+  [TaskStatus["In progress"]]: "rgb(29 78 216)",
+  [TaskStatus.Completed]: "#15803d",
+  [TaskStatus.Expired]: "#b91c1c",
+};
+
+const StatusMapColor: Record<TaskStatus, string> = {
+  [TaskStatus["To do"]]: "rgb(248 250 252)",
+  [TaskStatus["In progress"]]: "rgb(239 246 255)",
+  [TaskStatus.Completed]: "#f0fdf4",
+  [TaskStatus.Expired]: "#fef2f2",
+};

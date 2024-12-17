@@ -9,7 +9,7 @@ export default function HomePage() {
   const { accessToken, setAccessToken } = useAuthStore();
 
   if (!accessToken) {
-    const token = getAuthValueFromStorage()?.accessToken;
+    const token = getAuthValueFromStorage()?.token;
     if (token) {
       setAccessToken(token);
     }

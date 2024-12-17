@@ -156,17 +156,15 @@ table.fc-scrollgrid {
 .fc-event-main {
   border-radius: 0.5rem;
   padding: 0.5rem !important;
-  /* background-color: oklch(0.97 0.014 254.604);
-  color: oklch(0.488 0.243 264.376) !important; */
   font-size: 12px;
   font-weight: 600;
 }
 
 .fc-v-event {
-  /* background: none !important;
-  border: none !important; */
+  border-width: 0;
+  border-left-width: 4px;
 }
 
 .fc-event-time {
-  color: oklch(0.623 0.214 259.815)
+  /* color: oklch(0.623 0.214 259.815) */
 }

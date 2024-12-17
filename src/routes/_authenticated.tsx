@@ -1,6 +1,5 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-import ErrorFallback from "@/components/ErrorFallback";
 import { getAuthValueFromStorage } from "@/services";
 import SideBar from "@/components/organisms/side-bar";
 

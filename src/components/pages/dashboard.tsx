@@ -1,30 +1,28 @@
 import { useEffect, useState } from "react";
-import { FormTask } from "../organisms/form-task";
 import TaskCalendar from "../organisms/task-calendar";
 import { Button, Card, CardContent, CardHeader, CardTitle } from "../ui";
-import DashboardViewAction from "../organisms/dashboard-view-action";
 import { Draggable } from "@fullcalendar/interaction";
-
-const externalEvents = [
-  { title: "Art 1", id: 34432, custom: "fdsfdsfds" },
-  { title: "Art 2", id: 323232 },
-  { title: "Art 3", id: 1111 },
-  { title: "Art 4", id: 432432 },
-];
+import { useGetFeedback } from "@/hooks/react-query/useAI";
+import { ThreeDotsLoader } from "../mocules/three-dot-loader";
+import { Terminal } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "../ui/alert";
+import { useGetTasks } from "@/hooks/react-query/useTasks";
 
 export default function DashboardPage() {
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [getFeedback, setGetFeedback] = useState(false);
+  const { data: feedback, isPending: feedbackPending } = useGetFeedback(getFeedback);
+  const { data: tasks, isPending: taskPending } = useGetTasks();
 
   useEffect(() => {
-    let draggableEl = document.getElementById("external-events");
+    const draggableEl = document.getElementById("external-events");
     if (!draggableEl) return;
     const draggable = new Draggable(draggableEl, {
       itemSelector: ".fc-event",
       eventData: function (eventEl) {
-        let id = eventEl.dataset.id;
-        let title = eventEl.getAttribute("title");
-        let color = eventEl.dataset.color;
-        let custom = eventEl.dataset.custom;
+        const id = eventEl.dataset.id;
+        const title = eventEl.getAttribute("title");
+        const color = eventEl.dataset.color;
+        const custom = eventEl.dataset.custom;
 
         return {
           id: id,
@@ -41,15 +39,27 @@ export default function DashboardPage() {
     };
   }, []);
 
+  const externalEvents =
+    tasks
+      ?.filter((task) => !task.estimatedTime)
+      .map((task) => ({
+        id: task.id,
+        title: task.name,
+      })) || [];
+
   return (
     <div className="grid h-screen grid-cols-12 gap-4 p-8 pt-6">
       <div className="col-span-9">
-        <DashboardViewAction />
-        <TaskCalendar />
+        {taskPending ? (
+          <ThreeDotsLoader />
+        ) : tasks ? (
+          <TaskCalendar tasks={tasks} />
+        ) : (
+          <div>No tasks found</div>
+        )}
       </div>
       <div className="col-span-3 flex flex-col items-end gap-4">
-        <Button onClick={() => setIsSheetOpen(true)}>Add Task</Button>
-        <FormTask open={isSheetOpen} onOpenChange={setIsSheetOpen} />
+        <Button onClick={() => setGetFeedback(true)}>Analyze Schedule</Button>
         <Card className="w-full">
           <CardHeader>
             <CardTitle>Unestimated Tasks</CardTitle>
@@ -58,14 +68,44 @@ export default function DashboardPage() {
             {externalEvents.map((event) => (
               <div
                 key={event.id}
-                className="fc-event fc-daygrid-event fc-daygrid-block-event bg-blue-50 text-blue-700"
+                className="fc-event fc-daygrid-event fc-daygrid-block-event bg-slate-50 text-slate-700"
                 data-id={event.id}
-                data-custom={event.custom}
                 title={event.title}
               >
                 <div className="fc-event-main">{event.title}</div>
               </div>
             ))}
+          </CardContent>
+        </Card>
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>AI Feedback</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {getFeedback ? (
+              feedbackPending ? (
+                <ThreeDotsLoader />
+              ) : (
+                <div className="flex flex-col gap-1">
+                  <Alert>
+                    <Terminal className="h-4 w-4" />
+                    <AlertTitle>Recommendations!</AlertTitle>
+                    <AlertDescription>{feedback?.recommendations}</AlertDescription>
+                  </Alert>
+                  <Alert variant="destructive">
+                    <Terminal className="h-4 w-4" />
+                    <AlertTitle>Warning!</AlertTitle>
+                    <AlertDescription>
+                      {feedback?.warnings || "There's no warnings"}
+                    </AlertDescription>
+                  </Alert>
+                </div>
+              )
+            ) : (
+              <div className="text-sm text-neutral-400">
+                Click "Analyze Schedule" button above to get feedback
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

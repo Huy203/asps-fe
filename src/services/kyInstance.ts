@@ -1,7 +1,7 @@
 import { redirect } from "@tanstack/react-router";
 import ky from "ky";
 
-import { getAuthValueFromStorage, refreshToken, signOut } from "./auth";
+import { getAuthValueFromStorage, signOut } from "./auth";
 
 const BASE_URL = import.meta.env.VITE_PUBLIC_API_ENDPOINT || "http://localhost:3000";
 
@@ -23,24 +23,35 @@ const api = ky.create({
     beforeRequest: [
       async (request) => {
         const authInfo = getAuthValueFromStorage();
-        request.headers.set("Authorization", `Bearer ${authInfo?.accessToken}`);
+        request.headers.set("Authorization", `Bearer ${authInfo?.token}`);
       },
     ],
     afterResponse: [
-      async (request, __, response) => {
+      async (_, __, response) => {
         if (response.status === 401) {
-          const authInfo = getAuthValueFromStorage();
-          if (authInfo?.refreshToken) {
-            try {
-              const newAccessToken = await refreshToken();
-              request.headers.set("Authorization", `Bearer ${newAccessToken.accessToken}`);
-              return ky(request);
-            } catch (e) {
-              console.error(e);
-            }
-          } else {
-            await signOut();
-            redirect({ to: "/log-in" });
+          // const authInfo = getAuthValueFromStorage();
+          // if (authInfo?.refreshToken) {
+          //   try {
+          //     const newAccessToken = await refreshToken();
+          //     request.headers.set("Authorization", `Bearer ${newAccessToken.accessToken}`);
+          //     return ky(request);
+          //   } catch (e) {
+          //     console.error(e);
+          //     await signOut();
+          //     redirect({ to: "/log-in" });
+          //   }
+          // } else {
+          console.log("Unauthorized response received, signing out...");
+          await signOut();
+          console.log("Redirecting to /log-in...");
+          redirect({ to: "/log-in" });
+          // }
+        } else {
+          if (!response.ok) {
+            const body: {
+              message: string;
+            } = await response.json();
+            throw new Error(body.message);
           }
         }
         return response;

@@ -43,6 +43,7 @@
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cmdk": "1.0.0",
     "dayjs": "^1.11.13",
     "dnd-core": "^16.0.1",
     "firebase": "^11.0.2",

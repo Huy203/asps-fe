@@ -4,14 +4,14 @@ export enum EnumGender {
 }
 
 export enum TaskPriority {
-  Low = "Low",
-  Medium = "Medium",
-  High = "High",
+  Low = "LOW",
+  Medium = "MEDIUM",
+  High = "HIGH",
 }
 
 export enum TaskStatus {
-  Todo = "To do",
-  InProgress = "In Progress",
-  Completed = "Completed",
-  Expired = "Expired",
+  "To do" = "TODO",
+  "In progress" = "IN_PROGRESS",
+  Completed = "COMPLETED",
+  Expired = "EXPIRED",
 }

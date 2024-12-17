@@ -1,19 +1,22 @@
 import { Link } from "@tanstack/react-router";
-import { Calendar, LogOut, User } from "lucide-react";
+import { Calendar, LayoutDashboardIcon, ListTodoIcon, LogOut, User } from "lucide-react";
 
 import { useSignOut } from "@/hooks/react-query/useAuth";
-import { useUserProfile } from "@/hooks/react-query/useUsers";
 
-import { Separator } from "../ui";
+import { Button, Separator } from "../ui";
 import { SideBarFeature, SideBarFeatureProps } from "./side-bar-feature";
 import { Skeleton } from "../ui/skeleton";
-import { DashboardIcon } from "@radix-ui/react-icons";
 
 const features: SideBarFeatureProps[] = [
   {
     to: "/dashboard",
-    icon: <DashboardIcon />,
+    icon: <LayoutDashboardIcon size={20} />,
     label: "Dashboard",
+  },
+  {
+    to: "/tasks",
+    icon: <ListTodoIcon size={20} />,
+    label: "Tasks",
   },
 ];
 
@@ -42,7 +45,9 @@ export default function SideBar() {
           </div>
           <div className="flex flex-col gap-4 p-2">
             <Separator />
-            <Link to="/profile">
+            <Link
+            // to="/profile"
+            >
               <div className="flex flex-row items-center justify-between gap-2">
                 <div className="flex flex-row items-center justify-center gap-2">
                   {/* {avatar ? (
@@ -66,9 +71,9 @@ export default function SideBar() {
                     {/* )} */}
                   </div>
                 </div>
-                <button onClick={() => signOut.mutate()}>
+                <Button onClick={() => signOut.mutate()} variant="ghost">
                   <LogOut size={20} />
-                </button>
+                </Button>
               </div>
             </Link>
           </div>

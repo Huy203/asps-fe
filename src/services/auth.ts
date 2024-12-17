@@ -16,8 +16,9 @@ import api, { apiAuth } from "@/services/kyInstance";
 export const localStorageTokenKey = "auth_client_token";
 
 export type AuthInfo = {
-  accessToken: string;
-  refreshToken: string;
+  // accessToken: string;
+  // refreshToken: string;
+  token: string;
 };
 
 type SignInPayload = {
@@ -84,21 +85,21 @@ export const resetPassword = async (payload: ResetPasswordPayload) => {
     .data;
 };
 
-export const refreshToken = async () => {
-  const authInfo = getAuthValueFromStorage();
-  if (authInfo?.refreshToken) {
-    const data = (
-      await apiAuth
-        .post("auth/refresh", {
-          json: { refreshToken: authInfo.refreshToken },
-        })
-        .json<FetchingData<AuthInfo>>()
-    ).data;
-    localStorage.setItem(localStorageTokenKey, JSON.stringify(data));
-    return data;
-  }
-  throw new Error("No refresh token founded.");
-};
+// export const refreshToken = async () => {
+//   const authInfo = getAuthValueFromStorage();
+//   if (authInfo?.refreshToken) {
+//     const data = (
+//       await apiAuth
+//         .post("auth/refresh", {
+//           json: { refreshToken: authInfo.refreshToken },
+//         })
+//         .json<FetchingData<AuthInfo>>()
+//     ).data;
+//     localStorage.setItem(localStorageTokenKey, JSON.stringify(data));
+//     return data;
+//   }
+//   throw new Error("No refresh token founded.");
+// };
 
 export const getAccountIdentifier = async () => {
   return (await api.get("users/account").json<FetchingData<AccountIdentifier>>()).data;

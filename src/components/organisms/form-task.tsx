@@ -14,8 +14,12 @@ import {
   SheetHeader,
   SheetTitle,
 } from "../ui/sheet";
+import { useCreateTask, useUpdateTask } from "@/hooks/react-query/useTasks";
+import { Loader2 } from "lucide-react";
+import { Task } from "@/lib/types";
+import { useEffect } from "react";
 
-const schema = z.object({
+const taskSchema = z.object({
   name: z.string().min(1, "Task name is required"),
   description: z.string().optional(),
   priorityLevel: z
@@ -29,44 +33,97 @@ const schema = z.object({
     .refine((value) => !isNaN(Number(value)), {
       message: "Estimated time must be a number",
     })
-    .transform((value) => Number(value))
-    .optional(),
+    .transform((value) => Number(value)),
   status: z.nativeEnum(TaskStatus, { message: "Invalid status" }).optional(),
 });
+
+const formatDateTimeLocal = (date: Date) => {
+  const pad = (num: number) => String(num).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
 
 export const FormTask = ({
   open,
   onOpenChange,
+  task,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  task?: Task;
 }) => {
   const form = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(taskSchema),
     defaultValues: {
       name: "",
       description: "",
-      priorityLevel: undefined,
-      startTime: new Date(),
-      estimatedTime: undefined,
-      status: TaskStatus.Todo,
+      priorityLevel: TaskPriority.Low,
+      startTime: formatDateTimeLocal(new Date()),
+      estimatedTime: 0,
+      status: TaskStatus["To do"],
     },
   });
-  function onSubmit(data: z.infer<typeof schema>) {
+
+  const { handleSubmit } = form;
+  const { mutate: createMutate, isPending: createPending } = useCreateTask();
+  const { mutate: updateMutate, isPending: updatePending } = useUpdateTask();
+
+  function onSubmit(data: {
+    name: string;
+    description?: string;
+    priorityLevel?: TaskPriority;
+    startTime: string;
+    estimatedTime: number;
+    status?: TaskStatus;
+  }) {
     const transformedData = {
       ...data,
-      startTime: new Date(data.startTime).getTime(),
+      startTime: new Date(data.startTime),
     };
-    console.log(transformedData);
+
+    if (task) {
+      updateMutate(
+        { id: task.id, payload: transformedData },
+        {
+          onSuccess: () => {
+            form.reset();
+            onOpenChange(false);
+          },
+        }
+      );
+      return;
+    }
+    createMutate(transformedData, {
+      onSuccess: () => {
+        form.reset();
+        onOpenChange(false);
+      },
+    });
   }
+
+  useEffect(() => {
+    if (task) {
+      form.setValue("name", task.name);
+      form.setValue("description", task.description);
+      form.setValue("priorityLevel", task.priorityLevel);
+      form.setValue("startTime", formatDateTimeLocal(new Date(task.startTime)));
+      form.setValue("estimatedTime", task.estimatedTime);
+      form.setValue("status", task.status);
+    } else {
+      form.reset();
+    }
+  }, [task]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="flex w-[450px] flex-col gap-4">
+      <SheetContent
+        className="flex w-[450px] flex-col gap-4"
+        onInteractOutside={() => form.reset()}
+      >
         <SheetHeader>
           <SheetTitle>Task Details</SheetTitle>
           <SheetDescription>
-            Create new task by adding information here. Click save when you're done.
+            {task ? "Update your task" : "Create new task"} by adding information here. Click save
+            when you're done.
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>
@@ -82,17 +139,17 @@ export const FormTask = ({
                 <FormSelect
                   name="priorityLevel"
                   label="Priority Level"
-                  options={Object.values(TaskPriority).map((priority) => ({
-                    value: priority,
-                    label: priority,
+                  options={Object.entries(TaskPriority).map(([key, value]) => ({
+                    value,
+                    label: key,
                   }))}
                 />
                 <FormSelect
                   name="status"
                   label="Status"
-                  options={Object.values(TaskStatus).map((status) => ({
-                    value: status,
-                    label: status,
+                  options={Object.entries(TaskStatus).map(([key, value]) => ({
+                    value,
+                    label: key,
                   }))}
                 />
                 <FormText name="startTime" label="Start Time" required type="datetime-local" />
@@ -108,10 +165,12 @@ export const FormTask = ({
         </Form>
         <SheetFooter>
           <SheetClose asChild>
-            <Button variant="destructive">Delete</Button>
-          </SheetClose>
-          <SheetClose asChild>
-            <Button onClick={form.handleSubmit(onSubmit)}>Save changes</Button>
+            <Button onClick={handleSubmit(onSubmit)} disabled={createPending || updatePending}>
+              {(createPending || updatePending) && (
+                <Loader2 className="mr-1 size-5 animate-spin text-white" />
+              )}
+              Save changes
+            </Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>
