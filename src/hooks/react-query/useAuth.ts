@@ -164,7 +164,7 @@ export const useSignInWithGoogle = () => {
     mutationFn: signInWithGoogle,
     onSuccess: (data) => {
       if (data) {
-        setAccessToken(data.accessToken);
+        setAccessToken(data.token);
         navigate({ to: "/" });
         toast({
           title: "Success",

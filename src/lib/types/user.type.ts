@@ -20,19 +20,6 @@ export type Streak = {
   extended: boolean;
 };
 
-// export type LearnerProfile = {
-//   id: string;
-//   rank: EnumRank;
-//   levelId: number;
-//   xp: number;
-//   carrots: number;
-//   streakId: number;
-//   createdAt: string;
-//   updatedAt: string;
-//   level: Level;
-//   streak?: Streak;
-// };
-
 export type UserProfile = {
   id: string;
   username: string;
@@ -42,7 +29,6 @@ export type UserProfile = {
   dob: Date | null;
   gender: EnumGender | null;
   createdAt: string;
-  // learnerProfile: LearnerProfile | null;
   avatarId: string | null;
   avatar?: Image;
 };

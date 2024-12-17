@@ -17,6 +17,7 @@ import { Route as AuthenticatedIndexImport } from "./routes/_authenticated/index
 import { Route as AuthenticationSignUpImport } from "./routes/_authentication/sign-up";
 import { Route as AuthenticationLogInImport } from "./routes/_authentication/log-in";
 import { Route as AuthenticatedProfileImport } from "./routes/_authenticated/profile";
+import { Route as AuthenticatedTasksIndexImport } from "./routes/_authenticated/tasks/index";
 import { Route as AuthenticatedDashboardIndexImport } from "./routes/_authenticated/dashboard/index";
 import { Route as AuthenticationpasswordVerifyImport } from "./routes/_authentication/(password)/verify";
 import { Route as AuthenticationpasswordResetPasswordImport } from "./routes/_authentication/(password)/reset-password";
@@ -55,6 +56,12 @@ const AuthenticationLogInRoute = AuthenticationLogInImport.update({
 const AuthenticatedProfileRoute = AuthenticatedProfileImport.update({
   id: "/profile",
   path: "/profile",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+
+const AuthenticatedTasksIndexRoute = AuthenticatedTasksIndexImport.update({
+  id: "/tasks/",
+  path: "/tasks/",
   getParentRoute: () => AuthenticatedRoute,
 } as any);
 
@@ -158,6 +165,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthenticatedDashboardIndexImport;
       parentRoute: typeof AuthenticatedImport;
     };
+    "/_authenticated/tasks/": {
+      id: "/_authenticated/tasks/";
+      path: "/tasks";
+      fullPath: "/tasks";
+      preLoaderRoute: typeof AuthenticatedTasksIndexImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
   }
 }
 
@@ -167,12 +181,14 @@ interface AuthenticatedRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute;
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute;
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute;
+  AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute;
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+  AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
 };
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -209,6 +225,7 @@ export interface FileRoutesByFullPath {
   "/reset-password": typeof AuthenticationpasswordResetPasswordRoute;
   "/verify": typeof AuthenticationpasswordVerifyRoute;
   "/dashboard": typeof AuthenticatedDashboardIndexRoute;
+  "/tasks": typeof AuthenticatedTasksIndexRoute;
 }
 
 export interface FileRoutesByTo {
@@ -221,6 +238,7 @@ export interface FileRoutesByTo {
   "/reset-password": typeof AuthenticationpasswordResetPasswordRoute;
   "/verify": typeof AuthenticationpasswordVerifyRoute;
   "/dashboard": typeof AuthenticatedDashboardIndexRoute;
+  "/tasks": typeof AuthenticatedTasksIndexRoute;
 }
 
 export interface FileRoutesById {
@@ -235,6 +253,7 @@ export interface FileRoutesById {
   "/_authentication/(password)/reset-password": typeof AuthenticationpasswordResetPasswordRoute;
   "/_authentication/(password)/verify": typeof AuthenticationpasswordVerifyRoute;
   "/_authenticated/dashboard/": typeof AuthenticatedDashboardIndexRoute;
+  "/_authenticated/tasks/": typeof AuthenticatedTasksIndexRoute;
 }
 
 export interface FileRouteTypes {
@@ -248,7 +267,8 @@ export interface FileRouteTypes {
     | "/forgot-password"
     | "/reset-password"
     | "/verify"
-    | "/dashboard";
+    | "/dashboard"
+    | "/tasks";
   fileRoutesByTo: FileRoutesByTo;
   to:
     | ""
@@ -259,7 +279,8 @@ export interface FileRouteTypes {
     | "/forgot-password"
     | "/reset-password"
     | "/verify"
-    | "/dashboard";
+    | "/dashboard"
+    | "/tasks";
   id:
     | "__root__"
     | "/_authenticated"
@@ -271,7 +292,8 @@ export interface FileRouteTypes {
     | "/_authentication/(password)/forgot-password"
     | "/_authentication/(password)/reset-password"
     | "/_authentication/(password)/verify"
-    | "/_authenticated/dashboard/";
+    | "/_authenticated/dashboard/"
+    | "/_authenticated/tasks/";
   fileRoutesById: FileRoutesById;
 }
 
@@ -304,7 +326,8 @@ export const routeTree = rootRoute
       "children": [
         "/_authenticated/profile",
         "/_authenticated/",
-        "/_authenticated/dashboard/"
+        "/_authenticated/dashboard/",
+        "/_authenticated/tasks/"
       ]
     },
     "/_authentication": {
@@ -347,6 +370,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/dashboard/": {
       "filePath": "_authenticated/dashboard/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/tasks/": {
+      "filePath": "_authenticated/tasks/index.tsx",
       "parent": "/_authenticated"
     }
   }

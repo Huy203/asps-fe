@@ -24,9 +24,16 @@ export type FormSelectProps = {
     label: string;
   }[];
   className?: string;
+  placeholder?: string;
 };
 
-export default function FormSelect({ name, label, className, options = [] }: FormSelectProps) {
+export default function FormSelect({
+  name,
+  label,
+  className,
+  options = [],
+  placeholder,
+}: FormSelectProps) {
   const { control } = useFormContext();
   return (
     <FormField
@@ -38,7 +45,7 @@ export default function FormSelect({ name, label, className, options = [] }: For
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
               <SelectTrigger>
-                <SelectValue placeholder="Select a content type" />
+                <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>
             <SelectContent>

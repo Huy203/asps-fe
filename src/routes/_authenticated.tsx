@@ -1,6 +1,5 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-import ErrorFallback from "@/components/ErrorFallback";
 import { getAuthValueFromStorage } from "@/services";
 import SideBar from "@/components/organisms/side-bar";
 
@@ -41,7 +40,7 @@ export const Route = createFileRoute("/_authenticated")({
   },
   errorComponent: (error) => {
     console.error(error);
-    return <ErrorFallback />;
+    return <AuthenticatedPage />;
   },
   component: AuthenticatedPage,
 });
