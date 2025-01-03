@@ -43,3 +43,9 @@ export const fromPageToOffset = (value: PagingSchema) => {
     limit: value.pageSize,
   };
 };
+
+export const getEndTimeByDuration = (startTime: Date, duration: number) => {
+  const date = new Date(startTime);
+  date.setHours(date.getHours() + duration);
+  return date.toISOString();
+};

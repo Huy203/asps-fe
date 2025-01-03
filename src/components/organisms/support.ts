@@ -7,15 +7,15 @@ export const PriotityMapBorderColor: Record<TaskPriority, string> = {
 };
 
 export const StatusMapTextColor: Record<TaskStatus, string> = {
-  [TaskStatus["To do"]]: "rgb(51 65 85)",
-  [TaskStatus["In progress"]]: "rgb(29 78 216)",
+  [TaskStatus["To do"]]: "#334155",
+  [TaskStatus["In progress"]]: "#1d4ed8",
   [TaskStatus.Completed]: "#15803d",
   [TaskStatus.Expired]: "#b91c1c",
 };
 
 export const StatusMapColor: Record<TaskStatus, string> = {
-  [TaskStatus["To do"]]: "rgb(248 250 252)",
-  [TaskStatus["In progress"]]: "rgb(239 246 255)",
+  [TaskStatus["To do"]]: "#f8fafc",
+  [TaskStatus["In progress"]]: "#eff6ff",
   [TaskStatus.Completed]: "#f0fdf4",
   [TaskStatus.Expired]: "#fef2f2",
 };
