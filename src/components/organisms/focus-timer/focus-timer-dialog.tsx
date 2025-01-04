@@ -6,10 +6,9 @@ import {
 } from "@/components/ui/dialog";
 import { TaskStatus } from "@/lib/enums";
 import { Task } from "@/lib/types";
-import { cn, getEndTimeByDuration } from "@/lib/utils";
+import { getEndTimeByDuration } from "@/lib/utils";
 import { formatDate } from "@fullcalendar/core/index.js";
 import { Dialog } from "@radix-ui/react-dialog";
-import { useEffect, useState } from "react";
 import { Separator } from "../../ui";
 import { PriorityMapBorderColor, StatusMapColor, StatusMapTextColor } from "../support";
 import { FocusTimerCountDown } from "./focus-timer-countdown";
@@ -20,21 +19,6 @@ type FocusTimerDialogProps<T extends Task> = {
 };
 
 export function FocusTimerDialog<T extends Task>({ info, setInfo }: FocusTimerDialogProps<T>) {
-  const [colorMapping, setColorMapping] = useState({
-    priorityColor: "",
-    statusTextColor: "",
-    statusColor: "",
-  });
-
-  useEffect(() => {
-    if (info) {
-      const priorityColor = PriorityMapBorderColor[info.priorityLevel];
-      const statusTextColor = StatusMapTextColor[info.status];
-      const statusColor = StatusMapColor[info.status];
-      setColorMapping({ priorityColor, statusTextColor, statusColor });
-    }
-  }, [info]);
-
   return (
     <Dialog
       open={info !== undefined}
@@ -58,10 +42,8 @@ export function FocusTimerDialog<T extends Task>({ info, setInfo }: FocusTimerDi
           <div className="flex items-center justify-between">
             <span className="font-medium text-gray-700">Priority:</span>
             <span
-              className={cn(
-                "rounded-md px-2 py-1",
-                `bg-[${colorMapping.priorityColor}] text-white`
-              )}
+              className="rounded-md px-2 py-1 text-white"
+              style={{ backgroundColor: PriorityMapBorderColor[info.priorityLevel] }}
             >
               {info.priorityLevel}
             </span>
@@ -70,9 +52,11 @@ export function FocusTimerDialog<T extends Task>({ info, setInfo }: FocusTimerDi
             <span className="font-medium text-gray-700">Status:</span>
 
             <span
-              className={cn(
-                `rounded-md px-2 py-1 bg-[${colorMapping.statusColor}] text-[${colorMapping.statusTextColor}]`
-              )}
+              className="rounded-md px-2 py-1"
+              style={{
+                backgroundColor: StatusMapColor[info.status],
+                color: StatusMapTextColor[info.status],
+              }}
             >
               {Object.entries(TaskStatus).find(([, value]) => value === info.status)?.[0]}
             </span>

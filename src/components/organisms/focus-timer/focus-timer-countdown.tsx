@@ -48,7 +48,7 @@ export function FocusTimerCountDown({ info, onClose }: FocusTimerCountDownProps)
   };
 
   const handleReset = () => {
-    setTimeLeft(1500);
+    setTimeLeft(DurationTimer);
     setIsRunning(undefined);
     setShowTick(false);
     setStartAt(undefined);
