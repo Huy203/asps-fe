@@ -51,10 +51,20 @@ export const getEndTimeByDuration = (startTime: Date, duration: number) => {
   return date.toISOString();
 };
 
-export const formatDuration = (seconds: number) => {
+export const formatTime = (seconds: number, format: "hour" | "min" | "second" = "hour") => {
   const duration = intervalToDuration({ start: 0, end: seconds * 1000 });
   const hours = String(duration.hours || 0).padStart(2, "0");
   const minutes = String(duration.minutes || 0).padStart(2, "0");
   const secs = String(duration.seconds || 0).padStart(2, "0");
-  return `${hours}:${minutes}:${secs}`;
+
+  switch (format) {
+    case "hour":
+      return `${hours}:${minutes}:${secs}`;
+    case "min":
+      return `${minutes}:${secs}`;
+    case "second":
+      return `${secs}`;
+    default:
+      return `${hours}:${minutes}:${secs}`;
+  }
 };

@@ -8,9 +8,9 @@ import {
 import { auth } from "@/lib/config/firebase";
 import { FetchingData } from "@/lib/types";
 // import { AccountIdentifier } from "@/lib/types/user.type";
+import { EnumActionOTP } from "@/lib/enums";
 import { AccountIdentifier } from "@/lib/types/user.type";
-import { generateSearchParams } from "@/lib/utils";
-import api, { apiAuth } from "@/services/kyInstance";
+import api, { apiAuth, apiCustomToken } from "@/services/kyInstance";
 
 // const delay = 500;
 export const localStorageTokenKey = "auth_client_token";
@@ -51,7 +51,7 @@ export const signUp = async (payload: SignUpPayload) => {
   const data = (
     await apiAuth.post("auth/sign-up", { json: payload }).json<FetchingData<AuthInfo>>()
   ).data;
-  localStorage.setItem(localStorageTokenKey, JSON.stringify(data));
+  // localStorage.setItem(localStorageTokenKey, JSON.stringify(data));
   return data;
 };
 
@@ -62,27 +62,39 @@ export const signOut = async () => {
   return;
 };
 
-type VerifyOtpPayload = {
+export type VerifyOtpPayload = {
   email: string;
   otp: string;
+  action: EnumActionOTP;
 };
 
 export const verifyOtp = async (payload: VerifyOtpPayload) => {
-  return (await api.post("auth/otp", { json: payload }).json<FetchingData<AuthInfo>>()).data;
+  const data = (await api.post("auth/verify-otp", { json: payload }).json<FetchingData<AuthInfo>>())
+    .data;
+  // if (payload.action == EnumActionOTP.SIGN_UP) {
+  //   await apiCustomToken(data.token).post("auth/profile");
+  // }
+  return data;
 };
 
-type ForgotPasswordPayload = Pick<VerifyOtpPayload, "email">;
-export const forgotPassword = async (payload: ForgotPasswordPayload) => {
-  const searchParams = generateSearchParams(payload);
-  return (await api.get("auth/otp", { searchParams }).json<FetchingData<AuthInfo>>()).data;
+export type OTPPayload = {
+  email: string;
+};
+export const getOtp = async (payload: OTPPayload) => {
+  return (
+    await api.post("auth/reset-password/otp", { json: payload }).json<FetchingData<EnumActionOTP>>()
+  ).data;
 };
 
 type ResetPasswordPayload = {
-  newPassword: string;
+  password: string;
 };
-export const resetPassword = async (payload: ResetPasswordPayload) => {
-  return (await api.post("auth/password-update", { json: payload }).json<FetchingData<AuthInfo>>())
-    .data;
+export const resetPassword = async (payload: ResetPasswordPayload & { token: string }) => {
+  return (
+    await apiCustomToken(payload.token)
+      .post("auth/reset-password", { json: { password: payload.password } })
+      .json<FetchingData<AuthInfo>>()
+  ).data;
 };
 
 // export const refreshToken = async () => {

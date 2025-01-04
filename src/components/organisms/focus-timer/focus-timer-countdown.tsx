@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui";
-import { formatDuration } from "@/lib/utils";
+import { formatTime } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -73,7 +73,7 @@ export function FocusTimerCountDown({ info, onClose }: FocusTimerCountDownProps)
 
   return (
     <div className="flex h-full flex-col items-center justify-center">
-      <div className="mb-8 text-6xl font-bold">{formatDuration(timeLeft)}</div>
+      <div className="mb-8 text-6xl font-bold">{formatTime(timeLeft)}</div>
       <div className="flex space-x-4">
         <Button
           onClick={handleStart}

@@ -8,6 +8,7 @@ import * as z from "zod";
 
 import FormText from "@/components/mocules/form-inputs/form-text";
 import { useResetPassword } from "@/hooks/react-query/useAuth";
+import { useLocation } from "@tanstack/react-router";
 
 const formSchema = z
   .object({
@@ -26,10 +27,15 @@ export default function ResetPasswordPage() {
     defaultValues: { password: "", confirmPassword: "" },
     resolver: zodResolver(formSchema),
   });
+
+  const { token } = useLocation().state as { token: string };
   const resetPasswordMutation = useResetPassword();
 
   function onSubmit(data: FormInputs) {
-    resetPasswordMutation.mutate({ newPassword: data.password });
+    resetPasswordMutation.mutate({
+      password: data.password,
+      token: token,
+    });
   }
   return (
     <Card>

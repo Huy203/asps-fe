@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { HistoryState, useNavigate } from "@tanstack/react-router";
 
 import {
-  forgotPassword,
+  getOtp,
   resetPassword,
   signIn,
   signInWithGoogle,
@@ -11,6 +11,7 @@ import {
   verifyOtp,
 } from "@/services/auth";
 
+import { EnumActionOTP } from "@/lib/enums";
 import { useToast } from "../use-toast";
 import { useAuthStore } from "../useAuthStore";
 
@@ -49,11 +50,17 @@ export const useSignUp = () => {
   const navigate = useNavigate();
   return useMutation({
     mutationFn: signUp,
-    onSuccess: () => {
-      navigate({ to: "/log-in" });
+    onSuccess: (_, variables) => {
+      navigate({
+        to: "/verify-otp",
+        search: {
+          email: variables.email,
+          action: EnumActionOTP.SIGN_UP,
+        },
+      });
       toast({
         title: "Success",
-        description: "You have successfully signed up",
+        description: "Please verify your email",
         variant: "default",
       });
     },
@@ -89,18 +96,18 @@ export const useSignOut = () => {
   });
 };
 
-export const useForgotPassword = () => {
+export const useGetOtp = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: forgotPassword,
+    mutationFn: getOtp,
     onSuccess: (_, variables) => {
       toast({
         title: "Success",
-        description: "Please check your email for the OTP",
+        description: "Please check your email for the verification code",
         variant: "default",
       });
-      navigate({ to: "/verify", params: { email: variables.email } });
+      navigate({ to: "/verify-otp", params: { email: variables.email } });
     },
     onError: (error) => {
       toast({
@@ -112,24 +119,28 @@ export const useForgotPassword = () => {
   });
 };
 
-export const useVerifyOTP = () => {
+type OTPState = HistoryState & { token: string };
+export const useVerifyOtp = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   return useMutation({
     mutationFn: verifyOtp,
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Please check your email for the OTP",
-        variant: "default",
-      });
-      navigate({ to: "/reset-password" });
+    onSuccess: (data, variables) => {
+      if (variables.action == EnumActionOTP.SIGN_UP) {
+        toast({
+          variant: "default",
+          title: "Verify email successfully!",
+        });
+        navigate({ to: "/log-in" });
+      } else {
+        navigate({ to: "/reset-password", state: { token: data.token } as OTPState });
+      }
     },
     onError: (error) => {
       toast({
-        title: "Error",
-        description: error.message,
         variant: "destructive",
+        title: error.message,
+        description: "Please enter the correct OTP",
       });
     },
   });
@@ -137,12 +148,14 @@ export const useVerifyOTP = () => {
 
 export const useResetPassword = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: resetPassword,
     onSuccess: () => {
+      navigate({ to: "/log-in" });
       toast({
         title: "Success",
-        description: "Password has been reset",
+        description: "You have successfully reset your password",
         variant: "default",
       });
     },
