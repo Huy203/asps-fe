@@ -8,14 +8,20 @@ import { Task } from "@/lib/types";
 
 type FocusTimerCountDownProps = {
   info: Task;
+  isRunning: boolean | undefined;
+  setIsRunning: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   onClose: () => void;
 };
 
 const DurationTimer = 3600;
 
-export function FocusTimerCountDown({ info, onClose }: FocusTimerCountDownProps) {
+export function FocusTimerCountDown({
+  info,
+  isRunning,
+  setIsRunning,
+  onClose,
+}: FocusTimerCountDownProps) {
   const [timeLeft, setTimeLeft] = useState(DurationTimer);
-  const [isRunning, setIsRunning] = useState<boolean | undefined>();
   const [showTick, setShowTick] = useState<boolean | undefined>();
 
   const [startAt, setStartAt] = useState<Date>();
