@@ -8,7 +8,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import { useState } from "react";
 import { Button } from "../ui";
 import { FocusTimerDialog } from "./focus-timer/focus-timer-dialog";
-import { PriotityMapBorderColor, StatusMapColor, StatusMapTextColor } from "./support";
+import { PriorityMapBorderColor, StatusMapColor, StatusMapTextColor } from "./support";
 
 export default function TaskCalendar({ tasks }: { tasks: Task[] }) {
   const { mutate } = useUpdateTask();
@@ -21,7 +21,7 @@ export default function TaskCalendar({ tasks }: { tasks: Task[] }) {
       title: task.name,
       start: task.startTime,
       end: getEndTimeByDuration(task.startTime, task.estimatedTime),
-      borderColor: PriotityMapBorderColor[task.priorityLevel],
+      borderColor: PriorityMapBorderColor[task.priorityLevel],
       textColor: StatusMapTextColor[task.status],
       backgroundColor: StatusMapColor[task.status],
     }));

@@ -1,4 +1,5 @@
 import { TaskPriority, TaskStatus } from "../enums";
+import { FocusDuration } from "./focus-duration";
 
 export type Task = {
   id: string;
@@ -8,4 +9,5 @@ export type Task = {
   status: TaskStatus;
   startTime: Date;
   estimatedTime: number;
+  focusDurations?: FocusDuration[];
 };

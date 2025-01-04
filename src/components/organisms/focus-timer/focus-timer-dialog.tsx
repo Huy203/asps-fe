@@ -9,8 +9,9 @@ import { Task } from "@/lib/types";
 import { cn, getEndTimeByDuration } from "@/lib/utils";
 import { formatDate } from "@fullcalendar/core/index.js";
 import { Dialog } from "@radix-ui/react-dialog";
+import { useEffect, useState } from "react";
 import { Separator } from "../../ui";
-import { PriotityMapBorderColor, StatusMapColor, StatusMapTextColor } from "../support";
+import { PriorityMapBorderColor, StatusMapColor, StatusMapTextColor } from "../support";
 import { FocusTimerCountDown } from "./focus-timer-countdown";
 
 type FocusTimerDialogProps<T extends Task> = {
@@ -19,9 +20,20 @@ type FocusTimerDialogProps<T extends Task> = {
 };
 
 export function FocusTimerDialog<T extends Task>({ info, setInfo }: FocusTimerDialogProps<T>) {
-  const priorityColor = PriotityMapBorderColor[info.priorityLevel];
-  const statusTextColor = StatusMapTextColor[info.status];
-  const statusColor = StatusMapColor[info.status];
+  const [colorMapping, setColorMapping] = useState({
+    priorityColor: "",
+    statusTextColor: "",
+    statusColor: "",
+  });
+
+  useEffect(() => {
+    if (info) {
+      const priorityColor = PriorityMapBorderColor[info.priorityLevel];
+      const statusTextColor = StatusMapTextColor[info.status];
+      const statusColor = StatusMapColor[info.status];
+      setColorMapping({ priorityColor, statusTextColor, statusColor });
+    }
+  }, [info]);
 
   return (
     <Dialog
@@ -45,7 +57,12 @@ export function FocusTimerDialog<T extends Task>({ info, setInfo }: FocusTimerDi
         <div className="mt-4 space-y-2">
           <div className="flex items-center justify-between">
             <span className="font-medium text-gray-700">Priority:</span>
-            <span className={cn("rounded-md px-2 py-1", `bg-[${priorityColor}] text-white`)}>
+            <span
+              className={cn(
+                "rounded-md px-2 py-1",
+                `bg-[${colorMapping.priorityColor}] text-white`
+              )}
+            >
               {info.priorityLevel}
             </span>
           </div>
@@ -54,8 +71,7 @@ export function FocusTimerDialog<T extends Task>({ info, setInfo }: FocusTimerDi
 
             <span
               className={cn(
-                "rounded-md px-2 py-1",
-                `bg-[${statusColor}] text-[${statusTextColor}]`
+                `rounded-md px-2 py-1 bg-[${colorMapping.statusColor}] text-[${colorMapping.statusTextColor}]`
               )}
             >
               {Object.entries(TaskStatus).find(([, value]) => value === info.status)?.[0]}
@@ -93,7 +109,7 @@ export function FocusTimerDialog<T extends Task>({ info, setInfo }: FocusTimerDi
 
         <Separator className="mt-1" />
 
-        <FocusTimerCountDown onClose={() => setInfo(undefined)} />
+        <FocusTimerCountDown info={info} onClose={() => setInfo(undefined)} />
       </DialogContent>
     </Dialog>
   );

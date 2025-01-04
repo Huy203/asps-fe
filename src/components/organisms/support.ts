@@ -1,6 +1,6 @@
 import { TaskPriority, TaskStatus } from "@/lib/enums";
 
-export const PriotityMapBorderColor: Record<TaskPriority, string> = {
+export const PriorityMapBorderColor: Record<TaskPriority, string> = {
   [TaskPriority.High]: "#ef4444",
   [TaskPriority.Medium]: "#eab308",
   [TaskPriority.Low]: "#3b82f6",

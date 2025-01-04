@@ -1,8 +1,8 @@
+import { TaskPriority, TaskStatus } from "@/lib/enums";
+import { Task } from "@/lib/types";
+import { createTask, deleteTask, getTasks, updateTask } from "@/services/task";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "../use-toast";
-import { createTask, deleteTask, getTasks, updateTask } from "@/services/task";
-import { Task } from "@/lib/types";
-import { TaskPriority, TaskStatus } from "@/lib/enums";
 
 export const useCreateTask = () => {
   const queryClient = useQueryClient();

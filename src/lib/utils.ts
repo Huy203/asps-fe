@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 import { PagedData, PagingSchema } from "@/lib/types/pagination.type";
+import { intervalToDuration } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -48,4 +49,12 @@ export const getEndTimeByDuration = (startTime: Date, duration: number) => {
   const date = new Date(startTime);
   date.setHours(date.getHours() + duration);
   return date.toISOString();
+};
+
+export const formatDuration = (seconds: number) => {
+  const duration = intervalToDuration({ start: 0, end: seconds * 1000 });
+  const hours = String(duration.hours || 0).padStart(2, "0");
+  const minutes = String(duration.minutes || 0).padStart(2, "0");
+  const secs = String(duration.seconds || 0).padStart(2, "0");
+  return `${hours}:${minutes}:${secs}`;
 };

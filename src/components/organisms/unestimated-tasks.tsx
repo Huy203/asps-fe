@@ -1,6 +1,6 @@
 import { useGetTasks } from "@/hooks/react-query/useTasks";
-import { Card, CardHeader, CardTitle, CardContent } from "../ui";
-import { StatusMapColor, PriotityMapBorderColor, StatusMapTextColor } from "./support";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui";
+import { PriorityMapBorderColor, StatusMapColor, StatusMapTextColor } from "./support";
 
 export default function UnestimatedTasks() {
   const { data: tasks } = useGetTasks();
@@ -12,7 +12,7 @@ export default function UnestimatedTasks() {
         id: task.id,
         title: task.name,
         backgroundColor: StatusMapColor[task.status],
-        borderColor: PriotityMapBorderColor[task.priorityLevel],
+        borderColor: PriorityMapBorderColor[task.priorityLevel],
         textColor: StatusMapTextColor[task.status],
       })) || [];
 
