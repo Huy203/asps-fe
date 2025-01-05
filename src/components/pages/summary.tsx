@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui
 import { ThreeDotsLoader } from "../mocules/three-dot-loader";
 import { useEffect, useState } from "react";
 import { Task } from "@/lib/types";
-import { TaskPriority, TaskStatus } from "@/lib/enums";
+import { LoggingActionEnum, TaskPriority, TaskStatus } from "@/lib/enums";
 import { Link } from "@tanstack/react-router";
 import { Bar, BarChart, CartesianGrid, Label, Pie, PieChart, XAxis, YAxis } from "recharts";
 import {
@@ -14,6 +14,8 @@ import {
   ChartTooltipContent,
 } from "../ui/chart";
 import { PriorityMapBorderColor, StatusMapTextColor } from "../organisms/support";
+import { useGetLogging } from "@/hooks/react-query/useLogging";
+import { LoggingAction } from "@/lib/types/logging.type";
 
 const statusChartConfig = {
   tasks: {
@@ -57,7 +59,14 @@ const priotityChartConfig = {
 
 export default function SummaryPage() {
   const { data: tasks, isPending } = useGetTasks(undefined, undefined, undefined, "startTime:desc");
+  const { data: loggings } = useGetLogging();
   const [last7Days, setLast7Days] = useState<Task[]>([]);
+  const [focusSessionData, setFocusSessionData] = useState<
+    {
+      day: string;
+    }[]
+  >([]);
+  const [activity, setActivity] = useState<LoggingAction[]>([]);
 
   useEffect(() => {
     if (tasks) {
@@ -68,26 +77,26 @@ export default function SummaryPage() {
         return taskDate > last7Days;
       });
       setLast7Days(last7Days);
+
+      setFocusSessionData(
+        Object.entries(
+          tasks.reduce((acc: { [key: string]: { [key: string]: number } }, task) => {
+            task.focusDurations?.forEach((duration) => {
+              const day = new Date(duration.start).toLocaleDateString();
+              if (!acc[day]) {
+                acc[day] = {};
+              }
+              if (!acc[day][task.name]) {
+                acc[day][task.name] = 0;
+              }
+              acc[day][task.name] += duration.duration;
+            });
+            return acc;
+          }, {})
+        ).map(([day, durations]) => ({ day, ...durations }))
+      );
     }
   }, [tasks]);
-
-  if (!tasks) return null;
-
-  const focusSessionData = Object.entries(
-    tasks.reduce((acc: { [key: string]: { [key: string]: number } }, task) => {
-      task.focusDurations?.forEach((duration) => {
-        const day = new Date(duration.start).toLocaleDateString();
-        if (!acc[day]) {
-          acc[day] = {};
-        }
-        if (!acc[day][task.name]) {
-          acc[day][task.name] = 0;
-        }
-        acc[day][task.name] += duration.duration;
-      });
-      return acc;
-    }, {})
-  ).map(([day, durations]) => ({ day, ...durations }));
 
   const focusSessionConfig = focusSessionData.reduce(
     (acc: { [key: string]: { label: string; color: string } }, item) => {
@@ -103,7 +112,15 @@ export default function SummaryPage() {
     },
     {}
   );
-  console.log(focusSessionConfig);
+
+  useEffect(() => {
+    if (loggings) {
+      console.log(Object.values(loggings).flatMap((log) => log));
+      setActivity(Object.values(loggings).flatMap((log) => log));
+    }
+  }, [loggings]);
+
+  if (!tasks) return null;
 
   return (
     <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
@@ -220,6 +237,26 @@ export default function SummaryPage() {
             </Card>
             <Card>
               <CardHeader>
+                <CardTitle>Recent activity</CardTitle>
+                <CardDescription>
+                  Stay up to date with what's happening across the project.
+                </CardDescription>
+                <CardContent>
+                  <ul className="list-disc pl-4 pt-2">
+                    {activity.map((activity, index) => (
+                      <li key={index}>
+                        You {LoggingActionEnumMap[activity.action]} task at{" "}
+                        {new Date(activity.updatedAt).toLocaleString()}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </CardHeader>
+            </Card>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
                 <CardTitle>Priority breakdown</CardTitle>
                 <CardDescription>
                   Get a holistic view of how work is being prioritized.{" "}
@@ -269,8 +306,6 @@ export default function SummaryPage() {
                 </CardContent>
               </CardHeader>
             </Card>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>Focus session progress</CardTitle>
@@ -307,3 +342,10 @@ export default function SummaryPage() {
     </div>
   );
 }
+
+const LoggingActionEnumMap = {
+  [LoggingActionEnum.CREATE_TASK]: "created",
+  [LoggingActionEnum.DELETE_TASK]: "deleted",
+  [LoggingActionEnum.UPDATE_FOCUS_DURATION]: "updated focus duration",
+  [LoggingActionEnum.UPDATE_TASK]: "updated",
+};

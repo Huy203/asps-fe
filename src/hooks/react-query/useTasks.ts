@@ -11,6 +11,7 @@ export const useCreateTask = () => {
     mutationFn: createTask,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["logging"] });
       toast({
         title: "Success",
         description: "Task created successfully",
@@ -35,6 +36,7 @@ export const useUpdateTask = () => {
       updateTask(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["logging"] });
       toast({
         title: "Success",
         description: "Task updated successfully",
@@ -58,6 +60,7 @@ export const useDeleteTask = () => {
     mutationFn: deleteTask,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["logging"] });
       toast({
         title: "Success",
         description: "Task deleted successfully",
