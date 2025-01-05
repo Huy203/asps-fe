@@ -3,12 +3,12 @@ import SideBar from "../organisms/side-bar";
 
 export default function DashboardLayout({ children }: React.PropsWithChildren<object>) {
   return (
-    <div className="flex h-full">
-      <div className="sticky left-0 top-0 z-10 flex h-dvh bg-white">
+    <div className="relative flex h-screen bg-[#F8F8F8]">
+      <div className="sticky top-0 z-50 h-screen">
         <SideBar />
       </div>
 
-      <main className="flex flex-1 flex-col">
+      <main className="z-0 flex-1 overflow-y-auto pt-12 sm:pt-0">
         <NavBar />
         {children}
       </main>

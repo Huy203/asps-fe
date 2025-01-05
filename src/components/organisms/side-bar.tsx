@@ -3,10 +3,11 @@ import { Calendar, GlobeIcon, LayoutDashboardIcon, ListTodoIcon, LogOut, User } 
 
 import { useSignOut } from "@/hooks/react-query/useAuth";
 
-import { Button, Separator } from "../ui";
-import { SideBarFeature, SideBarFeatureProps } from "./side-bar-feature";
-import { Skeleton } from "../ui/skeleton";
 import { useUserProfile } from "@/hooks/react-query/useUsers";
+import { useState } from "react";
+import { Button, Separator } from "../ui";
+import { Skeleton } from "../ui/skeleton";
+import { SideBarFeature, SideBarFeatureProps } from "./side-bar-feature";
 
 const features: SideBarFeatureProps[] = [
   {
@@ -27,6 +28,7 @@ const features: SideBarFeatureProps[] = [
 ];
 
 export default function SideBar() {
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
   const signOut = useSignOut();
   // const { avatar } = useUserAvatar();
   const { data: user, isSuccess } = useUserProfile();

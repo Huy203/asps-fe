@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import TaskCalendar from "../organisms/task-calendar";
-import { Button, Card, CardContent, CardHeader, CardTitle } from "../ui";
-import { Draggable } from "@fullcalendar/interaction";
 import { useGetFeedback } from "@/hooks/react-query/useAI";
-import { ThreeDotsLoader } from "../mocules/three-dot-loader";
-import { Terminal } from "lucide-react";
-import { Alert, AlertTitle, AlertDescription } from "../ui/alert";
 import { useGetTasks } from "@/hooks/react-query/useTasks";
+import { Draggable } from "@fullcalendar/interaction";
+import { Terminal } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ThreeDotsLoader } from "../mocules/three-dot-loader";
+import TaskCalendar from "../organisms/task-calendar";
 import UnestimatedTasks from "../organisms/unestimated-tasks";
+import { Button, Card, CardContent, CardHeader, CardTitle } from "../ui";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 
 export default function DashboardPage() {
   const [getFeedback, setGetFeedback] = useState(false);
@@ -41,8 +41,8 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="grid h-screen grid-cols-12 gap-4 p-8 pt-6">
-      <div className="col-span-9">
+    <div className="grid h-screen grid-cols-1 gap-4 p-4 pt-6 md:grid-cols-12 md:p-8">
+      <div className="md:col-span-9">
         {taskPending ? (
           <ThreeDotsLoader />
         ) : tasks ? (
@@ -51,7 +51,7 @@ export default function DashboardPage() {
           <div>No tasks found</div>
         )}
       </div>
-      <div className="col-span-3 flex flex-col items-end gap-4">
+      <div className="flex flex-col items-end gap-4 md:col-span-3">
         <Button onClick={() => setGetFeedback(true)}>Analyze Schedule</Button>
         <UnestimatedTasks />
         <Card className="w-full">

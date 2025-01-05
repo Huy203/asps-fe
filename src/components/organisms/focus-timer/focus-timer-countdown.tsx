@@ -26,15 +26,15 @@ export function FocusTimerCountDown({
 
   const [startAt, setStartAt] = useState<Date>();
 
-  const { mutate: updateMutate, isPending: updatePending } = useUpdateTask();
+  const { mutate: updateMutate, isPending: updatePending, isSuccess } = useUpdateTask();
 
   useEffect(() => {
     if (isRunning) {
       const timer = setInterval(() => {
         setTimeLeft((timeLeft) => timeLeft - 1);
         if (timeLeft === 0) {
-          // TODO: Add notification
-          handleReset();
+          setTimeLeft(DurationTimer);
+          setIsRunning(undefined);
           setShowTick(true);
         }
       }, 1000);
@@ -44,6 +44,12 @@ export function FocusTimerCountDown({
       };
     }
   }, [timeLeft, isRunning]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      onClose();
+    }
+  }, [isSuccess, onClose]);
 
   const handleStart = () => {
     if (isRunning === undefined) {
@@ -68,13 +74,12 @@ export function FocusTimerCountDown({
         focusDurations: [
           ...(info.focusDurations || []),
           {
-            start: startAt!,
+            start: startAt!.toISOString(),
             duration: DurationTimer - timeLeft,
           },
         ],
       },
     });
-    onClose();
   };
 
   return (
