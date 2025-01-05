@@ -5,8 +5,8 @@ import { getAuthValueFromStorage } from "@/services";
 
 const AuthenticatedPage = () => {
   return (
-    <div className="flex h-screen bg-[#F8F8F8]">
-      <div className="sticky top-0 z-10 h-screen">
+    <div className="flex h-screen flex-col bg-[#F8F8F8] sm:flex-row">
+      <div className="sm::h-screen sticky top-0 z-10">
         <SideBar />
       </div>
 

@@ -7,19 +7,6 @@ export type AccountIdentifier = {
   dob: string;
 };
 
-export type Level = {
-  id: number;
-  xp: number;
-};
-
-export type Streak = {
-  id: number;
-  current: number;
-  target: number;
-  record: number;
-  extended: boolean;
-};
-
 export type UserProfile = {
   id: string;
   username: string;
@@ -28,7 +15,6 @@ export type UserProfile = {
   name: string | null;
   dob: Date | null;
   gender: EnumGender | null;
-  createdAt: string;
   avatarId: string | null;
   avatar?: Image;
 };
