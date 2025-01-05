@@ -55,14 +55,6 @@ export default function TaskCalendar({ tasks }: { tasks: Task[] }) {
             </div>
           );
         }}
-        customButtons={{
-          analyze: {
-            text: "Analyze Schedule",
-            click: function () {
-              alert("Analyze button clicked");
-            },
-          },
-        }}
         headerToolbar={{
           right: "prev,today,next",
         }}
