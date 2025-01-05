@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Form } from "@components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, LogOut } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -11,6 +11,7 @@ import { useSignOut } from "@/hooks/react-query/useAuth";
 
 import FormText from "../mocules/form-inputs/form-text";
 import Confetti, { ConfettiRef } from "../ui/confetti";
+import { useUserProfile } from "@/hooks/react-query/useUsers";
 
 const formSchema = z.object({
   email: z.string().email().optional(),
@@ -29,8 +30,7 @@ export default function ProfilePage() {
   });
   const signOutMutation = useSignOut();
   // TODO: uncomment this block when connected to the backend
-  // const { data, isLoading, isSuccess } = useUserProfile();
-  const isLoading = false;
+  const { data, isLoading, isSuccess } = useUserProfile();
   const confettiRef = useRef<ConfettiRef>(null);
 
   function onSubmit(data: FormInputs) {
@@ -39,11 +39,11 @@ export default function ProfilePage() {
   }
 
   // TODO: uncomment this block when connected to the backend
-  // useEffect(() => {
-  //   if (isSuccess && data) {
-  //     form.reset(data);
-  //   }
-  // }, [data, isSuccess]);
+  useEffect(() => {
+    if (isSuccess && data) {
+      form.reset(data[0]);
+    }
+  }, [data, isSuccess]);
 
   return (
     <div className="flex min-h-screen w-screen flex-col items-center justify-center gap-2 overflow-hidden bg-gradient-to-r from-blue-200 to-pink-200 sm:pb-16 sm:pt-10">
