@@ -5,8 +5,14 @@ import { useEffect, useState } from "react";
 import { Task } from "@/lib/types";
 import { TaskPriority, TaskStatus } from "@/lib/enums";
 import { Link } from "@tanstack/react-router";
-import { Bar, BarChart, CartesianGrid, Label, Legend, Pie, PieChart, XAxis, YAxis } from "recharts";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
+import { Bar, BarChart, CartesianGrid, Label, Pie, PieChart, XAxis, YAxis } from "recharts";
+import {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "../ui/chart";
 import { PriorityMapBorderColor, StatusMapTextColor } from "../organisms/support";
 
 const statusChartConfig = {
@@ -50,7 +56,7 @@ const priotityChartConfig = {
 };
 
 export default function SummaryPage() {
-  const { data: tasks, isPending } = useGetTasks();
+  const { data: tasks, isPending } = useGetTasks(undefined, undefined, undefined, "startTime:desc");
   const [last7Days, setLast7Days] = useState<Task[]>([]);
 
   useEffect(() => {
@@ -67,14 +73,46 @@ export default function SummaryPage() {
 
   if (!tasks) return null;
 
+  const focusSessionData = Object.entries(
+    tasks.reduce((acc: { [key: string]: { [key: string]: number } }, task) => {
+      task.focusDurations?.forEach((duration) => {
+        const day = new Date(duration.start).toLocaleDateString();
+        if (!acc[day]) {
+          acc[day] = {};
+        }
+        if (!acc[day][task.name]) {
+          acc[day][task.name] = 0;
+        }
+        acc[day][task.name] += duration.duration;
+      });
+      return acc;
+    }, {})
+  ).map(([day, durations]) => ({ day, ...durations }));
+
+  const focusSessionConfig = focusSessionData.reduce(
+    (acc: { [key: string]: { label: string; color: string } }, item) => {
+      Object.keys(item).forEach((key) => {
+        if (key !== "day" && !acc[key]) {
+          acc[key] = {
+            label: key,
+            color: `hsl(--chart-${Object.keys(acc).length + 1})`,
+          };
+        }
+      });
+      return acc;
+    },
+    {}
+  );
+  console.log(focusSessionConfig);
+
   return (
-    <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
+    <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
       {isPending ? (
         <ThreeDotsLoader />
       ) : (
         <>
           <h2 className="text-2xl font-bold tracking-tight">Summary</h2>
-          <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <Card>
               <CardHeader>
                 <CardTitle>
@@ -99,7 +137,7 @@ export default function SummaryPage() {
               </CardHeader>
             </Card>
           </div>
-          <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(2, minmax(0, 1fr))" }}>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>Status Overview</CardTitle>
@@ -175,7 +213,7 @@ export default function SummaryPage() {
                         }}
                       />
                     </Pie>
-                    <Legend />
+                    <ChartLegend content={<ChartLegendContent nameKey="status" />} />
                   </PieChart>
                 </ChartContainer>
               </CardContent>
@@ -224,12 +262,44 @@ export default function SummaryPage() {
                         }
                       />
                       <YAxis interval={1} />
-                      <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                      <ChartTooltip content={<ChartTooltipContent hideLabel />} />
                       <Bar dataKey="tasks" radius={8} />
                     </BarChart>
                   </ChartContainer>
                 </CardContent>
               </CardHeader>
+            </Card>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Focus session progress</CardTitle>
+                <CardDescription>
+                  See how your focus sessions are progressing at a glance.{" "}
+                  <Link to="/tasks" className="text-primary underline-offset-4 hover:underline">
+                    View all tasks
+                  </Link>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={focusSessionConfig}>
+                  <BarChart accessibilityLayer data={focusSessionData}>
+                    <CartesianGrid vertical={false} />
+                    <XAxis dataKey="day" tickLine={false} tickMargin={10} axisLine={false} />
+                    <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                    {tasks.map((task, index) => (
+                      <Bar
+                        key={index}
+                        dataKey={task.name}
+                        stackId="a"
+                        fill={`hsl(var(--chart-${index + 1}))`}
+                        radius={[4, 4, 4, 4]}
+                      />
+                    ))}
+                  </BarChart>
+                </ChartContainer>
+              </CardContent>
             </Card>
           </div>
         </>
