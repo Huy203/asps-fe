@@ -15,3 +15,8 @@ export enum TaskStatus {
   Completed = "COMPLETED",
   Expired = "EXPIRED",
 }
+
+export enum EnumActionOTP {
+  SIGN_UP = "SIGN_UP",
+  RESET_PASSWORD = "RESET_PASSWORD",
+}

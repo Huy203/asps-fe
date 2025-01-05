@@ -1,15 +1,15 @@
-import { DataTable } from "../organisms/data-table/data-table";
-import { Button, Card, CardContent, CardHeader, Checkbox } from "../ui";
 import { useGetTasks } from "@/hooks/react-query/useTasks";
-import { ThreeDotsLoader } from "../mocules/three-dot-loader";
-import { PlusIcon } from "lucide-react";
-import { FormTask } from "../organisms/form-task";
-import { useState } from "react";
-import { ColumnDef, Row } from "@tanstack/react-table";
-import { Task } from "@/lib/types";
 import { TaskPriority, TaskStatus } from "@/lib/enums";
+import { Task } from "@/lib/types";
+import { ColumnDef, Row } from "@tanstack/react-table";
+import { PlusIcon } from "lucide-react";
+import { useState } from "react";
+import { ThreeDotsLoader } from "../mocules/three-dot-loader";
 import { DataTableColumnHeader } from "../organisms/data-table/column-header";
+import { DataTable } from "../organisms/data-table/data-table";
 import { DataTableRowActions } from "../organisms/data-table/row-actions";
+import { FormTask } from "../organisms/form-task";
+import { Button, Card, CardContent, CardHeader, Checkbox } from "../ui";
 
 export default function TaskPage() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);

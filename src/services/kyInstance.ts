@@ -7,7 +7,6 @@ const BASE_URL = import.meta.env.VITE_PUBLIC_API_ENDPOINT || "http://localhost:3
 
 export const apiCustomToken = (token: string) =>
   ky.create({
-    mode: "no-cors",
     prefixUrl: BASE_URL,
     hooks: {
       beforeRequest: [
