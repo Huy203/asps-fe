@@ -21,6 +21,7 @@ import { Route as AuthenticationLogInImport } from './routes/_authentication/log
 import { Route as AuthenticationForgotPasswordImport } from './routes/_authentication/forgot-password'
 import { Route as AuthenticatedProfileImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedTasksIndexImport } from './routes/_authenticated/tasks/index'
+import { Route as AuthenticatedSummaryIndexImport } from './routes/_authenticated/summary/index'
 import { Route as AuthenticatedDashboardIndexImport } from './routes/_authenticated/dashboard/index'
 
 // Create/Update Routes
@@ -82,6 +83,12 @@ const AuthenticatedProfileRoute = AuthenticatedProfileImport.update({
 const AuthenticatedTasksIndexRoute = AuthenticatedTasksIndexImport.update({
   id: '/tasks/',
   path: '/tasks/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+
+const AuthenticatedSummaryIndexRoute = AuthenticatedSummaryIndexImport.update({
+  id: '/summary/',
+  path: '/summary/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 
@@ -166,6 +173,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardIndexImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/summary/': {
+      id: '/_authenticated/summary/'
+      path: '/summary'
+      fullPath: '/summary'
+      preLoaderRoute: typeof AuthenticatedSummaryIndexImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/tasks/': {
       id: '/_authenticated/tasks/'
       path: '/tasks'
@@ -182,6 +196,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+  AuthenticatedSummaryIndexRoute: typeof AuthenticatedSummaryIndexRoute
   AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
 }
 
@@ -189,6 +204,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+  AuthenticatedSummaryIndexRoute: AuthenticatedSummaryIndexRoute,
   AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
 }
 
@@ -226,6 +242,7 @@ export interface FileRoutesByFullPath {
   '/verify-otp': typeof AuthenticationVerifyOtpRoute
   '/': typeof AuthenticatedIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/summary': typeof AuthenticatedSummaryIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
 }
 
@@ -239,6 +256,7 @@ export interface FileRoutesByTo {
   '/verify-otp': typeof AuthenticationVerifyOtpRoute
   '/': typeof AuthenticatedIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/summary': typeof AuthenticatedSummaryIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
 }
 
@@ -254,6 +272,7 @@ export interface FileRoutesById {
   '/_authentication/verify-otp': typeof AuthenticationVerifyOtpRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/_authenticated/summary/': typeof AuthenticatedSummaryIndexRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
 }
 
@@ -269,6 +288,7 @@ export interface FileRouteTypes {
     | '/verify-otp'
     | '/'
     | '/dashboard'
+    | '/summary'
     | '/tasks'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -281,6 +301,7 @@ export interface FileRouteTypes {
     | '/verify-otp'
     | '/'
     | '/dashboard'
+    | '/summary'
     | '/tasks'
   id:
     | '__root__'
@@ -294,6 +315,7 @@ export interface FileRouteTypes {
     | '/_authentication/verify-otp'
     | '/_authenticated/'
     | '/_authenticated/dashboard/'
+    | '/_authenticated/summary/'
     | '/_authenticated/tasks/'
   fileRoutesById: FileRoutesById
 }
@@ -328,6 +350,7 @@ export const routeTree = rootRoute
         "/_authenticated/profile",
         "/_authenticated/",
         "/_authenticated/dashboard/",
+        "/_authenticated/summary/",
         "/_authenticated/tasks/"
       ]
     },
@@ -371,6 +394,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/dashboard/": {
       "filePath": "_authenticated/dashboard/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/summary/": {
+      "filePath": "_authenticated/summary/index.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/tasks/": {

@@ -25,7 +25,7 @@ export type UserProfile = {
   username: string;
   email: string;
   role: string;
-  fullName: string | null;
+  name: string | null;
   dob: Date | null;
   gender: EnumGender | null;
   createdAt: string;

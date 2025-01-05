@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { Calendar, LayoutDashboardIcon, ListTodoIcon, LogOut, User } from "lucide-react";
+import { Calendar, GlobeIcon, LayoutDashboardIcon, ListTodoIcon, LogOut, User } from "lucide-react";
 
 import { useSignOut } from "@/hooks/react-query/useAuth";
 
 import { Button, Separator } from "../ui";
 import { SideBarFeature, SideBarFeatureProps } from "./side-bar-feature";
 import { Skeleton } from "../ui/skeleton";
+import { useUserProfile } from "@/hooks/react-query/useUsers";
 
 const features: SideBarFeatureProps[] = [
   {
@@ -18,12 +19,17 @@ const features: SideBarFeatureProps[] = [
     icon: <ListTodoIcon size={20} />,
     label: "Tasks",
   },
+  {
+    to: "/summary",
+    icon: <GlobeIcon size={20} />,
+    label: "Summary",
+  },
 ];
 
 export default function SideBar() {
   const signOut = useSignOut();
   // const { avatar } = useUserAvatar();
-  // const { data: user, isSuccess } = useUserProfile();
+  const { data: user, isSuccess } = useUserProfile();
 
   return (
     <aside className="h-full w-[280px] shrink-0 border-r bg-white">
@@ -45,9 +51,7 @@ export default function SideBar() {
           </div>
           <div className="flex flex-col gap-4 p-2">
             <Separator />
-            <Link
-            // to="/profile"
-            >
+            <Link to="/profile">
               <div className="flex flex-row items-center justify-between gap-2">
                 <div className="flex flex-row items-center justify-center gap-2">
                   {/* {avatar ? (
@@ -58,17 +62,17 @@ export default function SideBar() {
                   </div>
                   {/* )} */}
                   <div className="flex h-10 w-full flex-1 flex-col justify-between overflow-hidden">
-                    {/* {user && isSuccess ? (
+                    {user && isSuccess ? (
                       <>
-                        <p className="text-small font-semibold text-black">{user.fullName}</p>
-                        <p className="text-supporting-text truncate text-xs">{user.email}</p>
+                        <p className="text-small font-semibold text-black">{user[0].name}</p>
+                        <p className="text-supporting-text truncate text-xs">{user[0].email}</p>
                       </>
-                    ) : ( */}
-                    <>
-                      <Skeleton className="h-[17px] w-20" />
-                      <Skeleton className="w-22 h-[17px]" />
-                    </>
-                    {/* )} */}
+                    ) : (
+                      <>
+                        <Skeleton className="h-[17px] w-20" />
+                        <Skeleton className="w-22 h-[17px]" />
+                      </>
+                    )}
                   </div>
                 </div>
                 <Button onClick={() => signOut.mutate()} variant="ghost">
