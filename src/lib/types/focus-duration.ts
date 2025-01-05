@@ -1,4 +1,4 @@
 export type FocusDuration = {
-  start: Date;
+  start: string;
   duration: number;
 };

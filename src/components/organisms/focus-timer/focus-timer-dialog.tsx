@@ -9,7 +9,7 @@ import { Task } from "@/lib/types";
 import { getEndTimeByDuration } from "@/lib/utils";
 import { formatDate } from "@fullcalendar/core";
 import { Dialog } from "@radix-ui/react-dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Separator } from "../../ui";
 import { PriorityMapBorderColor, StatusMapColor, StatusMapTextColor } from "../support";
 import { FocusTimerAlert } from "./focus-timer-alert";
@@ -23,6 +23,25 @@ type FocusTimerDialogProps<T extends Task> = {
 export function FocusTimerDialog<T extends Task>({ info, setInfo }: FocusTimerDialogProps<T>) {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [isRunning, setIsRunning] = useState<boolean | undefined>();
+
+  useEffect(() => {
+    const handlePopState = (event: any) => {
+      if (isRunning) {
+        event.preventDefault();
+        window.history.pushState(null, document.title);
+        setShowAlert(true);
+      }
+    };
+
+    if (isRunning) {
+      window.history.pushState(null, document.title);
+      window.addEventListener("popstate", handlePopState);
+    }
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [isRunning]);
 
   return (
     <div>
