@@ -97,6 +97,7 @@ export default function TaskCalendar({ tasks }: { tasks: Task[] }) {
         eventClick={(info) => {
           const task = tasks.find((task) => task.id === info.event.id);
           if (!task) return;
+          if (task.status === TaskStatus.Completed || task.status === TaskStatus.Expired) return;
           setFocusTimerInfo(task);
         }}
         eventResize={(info) => {

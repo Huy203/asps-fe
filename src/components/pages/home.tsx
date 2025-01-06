@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/hooks/useAuthStore";
-import { getAuthValueFromStorage } from "@/services";
+import { getAuthValueFromStorage } from "@/services/auth";
 
 import { useAccountIdentifier } from "@/hooks/react-query/useUsers";
 

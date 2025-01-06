@@ -22,7 +22,7 @@ export default function TaskPage() {
   });
 
   return (
-    <div className="h-full flex-1 flex-col space-y-8 p-4 md:p-8">
+    <div className="h-full flex-1 flex-col space-y-8 p-4 pt-16 md:p-8">
       {isPending ? (
         <ThreeDotsLoader />
       ) : (

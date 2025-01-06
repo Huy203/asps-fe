@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 import SideBar from "@/components/organisms/side-bar";
-import { getAuthValueFromStorage } from "@/services";
+import { getAuthValueFromStorage } from "@/services/auth";
 
 const AuthenticatedPage = () => {
   return (

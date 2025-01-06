@@ -1,4 +1,4 @@
-import { getAuthValueFromStorage } from "@/services";
+import { getAuthValueFromStorage } from "@/services/auth";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authentication")({
