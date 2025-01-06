@@ -259,7 +259,7 @@ export default function SummaryPage() {
                 <CardDescription>
                   Stay up to date with what's happening across the project.
                 </CardDescription>
-                <CardContent>
+                <CardContent className="max-h-[250px] overflow-scroll">
                   <ul className="list-disc pl-4 pt-2">
                     {activity.map((activity, index) => (
                       <li key={index}>

@@ -7,7 +7,6 @@ import {
   ListTodoIcon,
   LogOut,
   Menu,
-  User,
 } from "lucide-react";
 
 import { useSignOut } from "@/hooks/react-query/useAuth";
@@ -18,6 +17,8 @@ import { useState } from "react";
 import { Button, Separator } from "../ui";
 import { Skeleton } from "../ui/skeleton";
 import { SideBarFeature, SideBarFeatureProps } from "./side-bar-feature";
+
+const BASE_URL = import.meta.env.VITE_PUBLIC_API_ENDPOINT || "http://localhost:3000";
 
 const features: SideBarFeatureProps[] = [
   {
@@ -38,7 +39,7 @@ const features: SideBarFeatureProps[] = [
 ];
 
 export default function SideBar() {
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const signOut = useSignOut();
   // const { avatar } = useUserAvatar();
   const { data: user, isSuccess } = useUserProfile();
@@ -95,7 +96,12 @@ export default function SideBar() {
                     <img src={avatar.url} className="!size-10 rounded-full" />
                   ) : ( */}
                 <div className="grid !size-10 place-items-center rounded-full bg-neutral-100 text-white">
-                  <User size={20} />
+                  <img
+                    className="!size-10 rounded-full"
+                    src={`${BASE_URL}/files/${user?.[0].avatar}`}
+                    loading="lazy"
+                    alt={user?.[0].name ?? "Avatar"}
+                  />
                 </div>
                 {/* )} */}
                 <div className="flex h-10 w-full flex-1 flex-col justify-between overflow-hidden">
