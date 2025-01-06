@@ -1,5 +1,5 @@
 import { useGetTasks } from "@/hooks/react-query/useTasks";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui";
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui";
 import { ThreeDotsLoader } from "../mocules/three-dot-loader";
 import { useEffect, useState } from "react";
 import { Task } from "@/lib/types";
@@ -16,6 +16,9 @@ import {
 import { PriorityMapBorderColor, StatusMapTextColor } from "../organisms/support";
 import { useGetLogging } from "@/hooks/react-query/useLogging";
 import { LoggingAction } from "@/lib/types/logging.type";
+import { useGetAnalytics } from "@/hooks/react-query/useAI";
+import { Terminal } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "../ui/alert";
 
 const statusChartConfig = {
   tasks: {
@@ -67,6 +70,8 @@ export default function SummaryPage() {
     }[]
   >([]);
   const [activity, setActivity] = useState<LoggingAction[]>([]);
+  const [getFeedback, setGetFeedback] = useState(false);
+  const { data: feedback, isPending: feedbackPending } = useGetAnalytics(getFeedback);
 
   useEffect(() => {
     if (tasks) {
@@ -128,7 +133,20 @@ export default function SummaryPage() {
         <ThreeDotsLoader />
       ) : (
         <>
-          <h2 className="text-2xl font-bold tracking-tight">Summary</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold tracking-tight">Summary</h2>
+            <Button onClick={() => setGetFeedback(true)}>AI Feedback</Button>
+          </div>
+          {getFeedback &&
+            (feedbackPending ? (
+              <ThreeDotsLoader />
+            ) : (
+              <Alert>
+                <Terminal className="h-4 w-4" />
+                <AlertTitle>Recommendations!</AlertTitle>
+                <AlertDescription>{feedback?.result}</AlertDescription>
+              </Alert>
+            ))}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <Card>
               <CardHeader>
