@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 
 import { useSignOut } from "@/hooks/react-query/useAuth";
 
-import { useUserProfile } from "@/hooks/react-query/useUsers";
+import { useUpdateUserProfile, useUserProfile } from "@/hooks/react-query/useUsers";
 import { useEffect } from "react";
 import { z } from "zod";
 import FormText from "../mocules/form-inputs/form-text";
@@ -25,10 +25,10 @@ export default function ProfilePage() {
   const signOutMutation = useSignOut();
   // TODO: uncomment this block when connected to the backend
   const { data, isLoading, isSuccess } = useUserProfile();
+  const updateProfileMutation = useUpdateUserProfile();
 
   function onSubmit(data: FormInputs) {
-    console.group("logout" + data);
-    signOutMutation.mutate();
+    updateProfileMutation.mutate(data);
   }
 
   // TODO: uncomment this block when connected to the backend
@@ -54,7 +54,6 @@ export default function ProfilePage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormText name="email" label="Email" value={form.getValues("email")} disabled />
             <FormText name="name" label="Name" value={form.getValues("name")} />
-            <FormText name="location" label="Location" />
 
             <Button
               type="submit"
